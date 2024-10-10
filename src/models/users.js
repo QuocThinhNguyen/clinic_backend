@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
-
+import { AutoIncrement } from 'mongoose-sequence';  // Import AutoIncrement
 const { Schema } = mongoose;
 
-// Định nghĩa schema cho User
 const userSchema = new Schema({
-    id: {
+    userId: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
     email: {
         type: String,
@@ -22,17 +22,21 @@ const userSchema = new Schema({
         required: true
     },
     address: {
-        type: String,
-        required: true
+        type: String
     },
     gender: {
         type: String,
-        enum: ['Male', 'Female', 'Other'],
-        required: true
+        enum: ['Male', 'Female', 'Other']
+    },
+    roleId: {
+        type: String
+    },
+    phoneNumber: {
+        type: Number
     }
 });
+userSchema.plugin(AutoIncrement, { inc_field: 'userId' });
 
-// Tạo mô hình User từ schema
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('Users', userSchema);
 
 export default User;

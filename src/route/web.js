@@ -1,18 +1,13 @@
 import express from "express";
 
-let router = express.Router();
+const router = express.Router();
 
-let initWebRoutes = (app) => {
+router.get("/", (req, res) => {
+    return res.send("Hello Nodejs");
+});
 
-    router.get("/", (req, res) => {
-        return res.send("Hello Nodejs");
-    });
+router.get("/webhook", (req, res) => {
+    return res.send("Hello Webhook");
+});
 
-    router.get("/webhook", (req, res) => {
-        return res.send("Hello Webhook");
-    });
-
-    return app.use("/", router);
-}
-
-export default initWebRoutes;
+export default router;

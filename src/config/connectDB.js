@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 async function connectMongoDB() {
     try {
-        await mongoose.connect("mongodb://localhost:27017/MyStore", {
+        await mongoose.connect("mongodb://localhost:27017/Clinic", {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -12,4 +12,4 @@ async function connectMongoDB() {
     }
 }
 
-module.exports = connectMongoDB;
+export default connectMongoDB

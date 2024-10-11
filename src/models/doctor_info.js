@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { AutoIncrement } from 'mongoose-sequence';  // Import AutoIncrement
+import pkg from 'mongoose-sequence';  // Import AutoIncrement
+const AutoIncrement  = pkg(mongoose);
 
 const { Schema } = mongoose;
 
@@ -47,7 +48,7 @@ const doctorInfoSchema = new Schema({
     }
 });
 
-doctorInfoSchema.plugin(AutoIncrement, { inc_field: 'id' });
+doctorInfoSchema.plugin(AutoIncrement, { inc_field: 'id', start_seq: 1 });
 const DoctorInfo = mongoose.model('DoctorInfo', doctorInfoSchema);
 
 export default DoctorInfo;

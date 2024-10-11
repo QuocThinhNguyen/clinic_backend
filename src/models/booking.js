@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { AutoIncrement } from 'mongoose-sequence';  // Import AutoIncrement
+import pkg from 'mongoose-sequence';  // Import AutoIncrement
+const AutoIncrement  = pkg(mongoose);
 
 const { Schema } = mongoose;
 
@@ -33,7 +34,7 @@ const bookingSchema = new Schema({
     }
 });
 
-bookingSchema.plugin(AutoIncrement, { inc_field: 'id' });
+bookingSchema.plugin(AutoIncrement, { inc_field: 'id', start_seq: 1 });
 const Booking = mongoose.model('Booking', bookingSchema);
 
 export default Booking;

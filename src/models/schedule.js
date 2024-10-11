@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { AutoIncrement } from 'mongoose-sequence';  // Import AutoIncrement
+import pkg from 'mongoose-sequence';  // Import AutoIncrement
+const AutoIncrement  = pkg(mongoose);
 
 const { Schema } = mongoose;
 
@@ -31,7 +32,7 @@ const scheduleSchema = new Schema({
     }
 });
 
-scheduleSchema.plugin(AutoIncrement, { inc_field: 'idSche' });
+scheduleSchema.plugin(AutoIncrement, { inc_field: 'idSche', start_seq: 1 });
 
 const Schedule = mongoose.model('Schedule', scheduleSchema);
 

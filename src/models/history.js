@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { AutoIncrement } from 'mongoose-sequence';  // Import AutoIncrement
+import pkg from 'mongoose-sequence';  // Import AutoIncrement
+const AutoIncrement  = pkg(mongoose);
 
 const { Schema } = mongoose;
 
@@ -24,7 +25,7 @@ const historySchema = new Schema({
     }
 });
 
-historySchema.plugin(AutoIncrement, { inc_field: 'idHistory' });
+historySchema.plugin(AutoIncrement, { inc_field: 'idHistory', start_seq: 1 });
 const History = mongoose.model('History', historySchema);
 
 export default History;

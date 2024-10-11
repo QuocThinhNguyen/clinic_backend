@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { AutoIncrement } from 'mongoose-sequence';  // Import AutoIncrement
+import pkg from 'mongoose-sequence';  // Import AutoIncrement
+const AutoIncrement  = pkg(mongoose);
 
 const { Schema } = mongoose;
 
@@ -36,7 +37,7 @@ const markdownSchema = new Schema({
         required: true
     }
 });
-markdownSchema.plugin(AutoIncrement, { inc_field: 'id' });
+markdownSchema.plugin(AutoIncrement, { inc_field: 'id', start_seq: 1 });
 
 const Markdown = mongoose.model('Markdown', markdownSchema);
 

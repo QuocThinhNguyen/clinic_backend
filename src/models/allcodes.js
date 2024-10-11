@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { AutoIncrement } from 'mongoose-sequence';  // Import AutoIncrement
+import pkg from 'mongoose-sequence';  // Import AutoIncrement
+const AutoIncrement  = pkg(mongoose);
 
 const { Schema } = mongoose;
 
@@ -26,7 +27,7 @@ const allCodesSchema = new Schema({
     }
 });
 
-allCodesSchema.plugin(AutoIncrement, { inc_field: 'id' });
+allCodesSchema.plugin(AutoIncrement, { inc_field: 'id', start_seq: 1 });
 const AllCodes = mongoose.model('AllCodes', allCodesSchema);
 
 export default AllCodes;

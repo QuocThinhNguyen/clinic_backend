@@ -1,0 +1,43 @@
+import mongoose from 'mongoose';
+import { AutoIncrement } from 'mongoose-sequence';  // Import AutoIncrement
+
+const { Schema } = mongoose;
+
+const markdownSchema = new Schema({
+    id: {
+        type: Number,
+        unique: true
+    },
+    doctorId: {
+        type: Number,
+        ref: 'Doctor_info',
+        required: true
+    },
+    clinicId: {
+        type: Number,
+        ref: 'Clinic',
+        required: true
+    },
+    specialtyId: {
+        type: Number,
+        ref: 'Specialty',
+        required: true
+    },
+    contentHTML: {
+        type: String,
+        required: true
+    },
+    contentMarkdown: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    }
+});
+markdownSchema.plugin(AutoIncrement, { inc_field: 'id' });
+
+const Markdown = mongoose.model('Markdown', markdownSchema);
+
+export default Markdown;

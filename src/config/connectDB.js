@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 async function connectMongoDB() {
     try {
-        await mongoose.connect("mongodb://localhost:27017/Health_Schedule", {
+        await mongoose.connect("mongodb://localhost:27017/Clinic", {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -12,4 +12,5 @@ async function connectMongoDB() {
     }
 }
 
-export default connectMongoDB;
+export default connectMongoDB
+

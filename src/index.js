@@ -1,9 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import initWebRoutes from './route/web';
-import connectDB from './config/connectDB';
+import routers from './route/index.js';
+import connectDB from './config/connectDB.js';
 
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 let app = express();
 
@@ -12,7 +13,7 @@ let app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-initWebRoutes(app);
+routers(app);
 
 connectDB();
 

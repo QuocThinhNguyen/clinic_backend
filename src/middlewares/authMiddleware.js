@@ -12,8 +12,7 @@ export const authMiddleware = (req, res, next) => {
                 status: 'ERROR'
             })
         }
-        const {payload} = user
-        if(payload?.isAdmin){
+        if(user?.roleId === 'R1'){
             next()
         }else{
             return res.status(404).json({
@@ -26,7 +25,7 @@ export const authMiddleware = (req, res, next) => {
 
 export const authUserMiddleware = (req, res, next) => {
     const token = req.headers.token.split(' ')[1]
-    const userId = req.params.id
+    const userId = parseInt(req.params.id, 10)
     jwt.verify(token, process.env.ACCESS_TOKEN, function(err, user){
         if(err){
             return res.status(404).json({
@@ -34,8 +33,7 @@ export const authUserMiddleware = (req, res, next) => {
                 status: 'ERROR'
             })
         }
-        const {payload} = user
-        if(payload?.isAdmin || payload?.id === userId){
+        if(user?.roleId === 'R1' || user?.userId === userId){
             next()
         }else{
             return res.status(404).json({

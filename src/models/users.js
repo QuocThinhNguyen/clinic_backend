@@ -6,7 +6,6 @@ const { Schema } = mongoose;
 const userSchema = new Schema({
     userId: {
         type: Number,
-        required: true,
         unique: true
     },
     email: {
@@ -30,7 +29,8 @@ const userSchema = new Schema({
         enum: ['Male', 'Female', 'Other']
     },
     roleId: {
-        type: String
+        type: String,
+        default: 'R3'
     },
     phoneNumber: {
         type: Number

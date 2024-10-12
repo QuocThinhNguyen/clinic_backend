@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import routers from './route/index.js';
 import connectDB from './config/connectDB.js';
 
@@ -10,6 +11,7 @@ let app = express();
 
 // config app
 
+app.use(cookieParser())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

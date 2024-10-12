@@ -1,26 +1,29 @@
 import User from '../models/users.js'
 import bcrypt from 'bcrypt'
-import { generalAccessToken, generalRefreshToken } from './JwtService.js'
+import { generalAccessToken, generalRefreshToken, generalResetPasswordToken } from './JwtService.js'
+import dotenv from 'dotenv'
+import sendMail from '../utils/sendMail.js'
+dotenv.config()
 
 export const createUserService = (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const { name, email, password, confirmPassword, phone } = newUser
+        const { fullname, email, password, roleId } = newUser
         try {
             const checkUser = await User.findOne({
                 email: email
             })
             if (checkUser !== null) {
                 resolve({
-                    status: 'OK',
+                    status: 'ERR',
                     message: 'The email is already exists!'
                 })
             }
             const hash = bcrypt.hashSync(password, 10)
             const createdUser = await User.create({
-                name,
+                fullname,
                 email,
                 password: hash,
-                phone
+                roleId
             })
             if (createdUser) {
                 resolve({
@@ -44,7 +47,7 @@ export const loginUserService = (userLogin) => {
             })
             if (checkUser === null) {
                 resolve({
-                    status: 'OK',
+                    status: 'ERR',
                     message: 'The email is not defined'
                 })
             }
@@ -52,18 +55,18 @@ export const loginUserService = (userLogin) => {
 
             if (!comparePassword) {
                 resolve({
-                    status: 'OK',
+                    status: 'ERR',
                     message: 'The user or password is incorrect',
                 })
             }
             const access_token = await generalAccessToken({
-                id: checkUser.id,
-                isAdmin: checkUser.isAdmin
+                userId: checkUser.userId,
+                roleId: checkUser.roleId
             })
 
             const refresh_token = await generalRefreshToken({
-                id: checkUser.id,
-                isAdmin: checkUser.isAdmin
+                userId: checkUser.userId,
+                roleId: checkUser.roleId
             })
 
             resolve({
@@ -79,20 +82,56 @@ export const loginUserService = (userLogin) => {
     })
 }
 
+export const resetUserPasswordService = (email) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const checkEmail = await User.findOne({
+                email: email
+            })
+            if (checkEmail === null) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The email is not defined'
+                })
+            }
+
+            // Create reset password token
+            const token = await generalResetPasswordToken(email);
+            // Create reset password link
+            const resetLink = `${process.env.WEB_LINK}/user/reset-password/${token}`;
+            console.log('resetLink: ',resetLink)
+
+            sendMail(email,resetLink)
+
+            resolve({
+                status: 'OK',
+                message: 'Password reset link has been sent to your email',
+            })
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 export const updateUserService = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
             const checkUser = await User.findOne({
-                _id: id
+                userId: id
             })
             if (checkUser === null) {
                 resolve({
-                    status: 'OK',
+                    status: 'ERR',
                     message: 'The user is not defined'
                 })
             }
 
-            const updatedUser = await User.findByIdAndUpdate(id, data, {new: true})
+            const updatedUser = await User.findOneAndUpdate(
+                { userId: 4 },  // Điều kiện tìm kiếm
+                data,  // Giá trị cần cập nhật
+                { new: true }
+            )
             resolve({
                 status: 'OK',
                 message: 'SUCCESS',
@@ -109,16 +148,16 @@ export const deleteUserService = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const checkUser = await User.findOne({
-                _id: id
+                userId: id
             })
             if (checkUser === null) {
                 resolve({
-                    status: 'OK',
+                    status: 'ERR',
                     message: 'The user is not defined'
                 })
             }
 
-            await User.findByIdAndDelete(id)
+            await User.findOneAndDelete({ userId: id })
             resolve({
                 status: 'OK',
                 message: 'Delete user success',
@@ -150,11 +189,11 @@ export const getDetailsUserService = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const user = await User.findOne({
-                _id: id
+                userId: id
             })
             if (user === null) {
                 resolve({
-                    status: 'OK',
+                    status: 'ERR',
                     message: 'The user is not defined'
                 })
             }

@@ -3,6 +3,7 @@ import crypto from 'crypto'
 import bcrypt from 'bcrypt'
 import User from '../models/users.js'
 import dotenv from 'dotenv'
+import sendMail from '../utils/sendMail.js'
 dotenv.config()
 
 export const generalAccessToken = async (payload) => {
@@ -29,6 +30,15 @@ export const generalResetPasswordToken = async (email) => {
     return reset_password_token
 }
 
+export const generalOTPToken = async (email) => {
+    const otp_token = jwt.sign({
+        email: email,
+        otp: Math.floor(100000 + Math.random() * 900000).toString()
+    }, process.env.SECRET_KEY, { expiresIn: '15m' })
+
+    return otp_token
+}
+
 export const handleResetPasswordTokenService = async (token) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -37,13 +47,104 @@ export const handleResetPasswordTokenService = async (token) => {
             const hash = bcrypt.hashSync(tempPassword, 10)
             await User.findOneAndUpdate(
                 { email: decoded.email },  // Điều kiện tìm kiếm
-                {password: hash},  // Giá trị cần cập nhật
+                { password: hash },  // Giá trị cần cập nhật
                 { new: true }
             )
             resolve({
                 status: 'OK',
                 message: `Token is valid. Your new password of ${decoded.email} is ${tempPassword}`,
             })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+export const createAndSendOTPService = async (newUser, otp_token) => {
+    return new Promise(async (resolve, reject) => {
+        const { fullname, email, password } = newUser
+        try {
+            const checkUser = await User.findOne({
+                email: email
+            })
+            const decoded = jwt.verify(otp_token, process.env.SECRET_KEY); // Verify and decode the token
+            const otpFromToken = decoded.otp; // Extract OTP from the token
+            const hashedPassword = bcrypt.hashSync(password, 10)
+            const hashedOTP = bcrypt.hashSync(otpFromToken, 10)
+            const verifyLink = `${process.env.WEB_LINK}/user/verify-account/${otp_token}`;
+            const text = `Your OTP for email verification is: ${otpFromToken}. It is valid for 60 seconds. Please use this link to verify your account: ${verifyLink}`
+            const subject = 'Verify account'
+            if (checkUser !== null) {
+                if (checkUser.isVerified) {
+                    resolve({
+                        status: 'ERR',
+                        message: 'The email is already exists!'
+                    })
+                } else {
+
+                    await User.findOneAndUpdate(
+                        { email: email },  // Điều kiện tìm kiếm
+                        { otpCode: hashedOTP },  // Giá trị cần cập nhật
+                        { new: true }
+                    )
+
+                    await sendMail(email, text, subject)
+                    resolve({
+                        status: 'OK',
+                        message: text,
+                    })
+                }
+            }
+
+            await User.create({
+                fullname,
+                email,
+                password: hashedPassword,
+                otpCode: hashedOTP
+            })
+            await sendMail(email, text, subject)
+            resolve({
+                status: 'OK',
+                message: text,
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+export const verifyUserService = async (otpCode, otp_token) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const decoded = jwt.verify(otp_token, process.env.SECRET_KEY); // Verify and decode the token
+            const email = decoded.email;
+            const checkEmail = await User.findOne({
+                email: email
+            })
+            const compareOTP = bcrypt.compareSync(otpCode, checkEmail.otpCode)
+            if (!otpCode || otpCode.trim() === '') {
+                resolve({
+                    status: 'ERR',
+                    message: 'The otp is required!'
+                })
+            }
+            if (!compareOTP) {
+                resolve({
+                    status: 'ERR',
+                    message: 'The otp is wrong!'
+                })
+            } else {
+                await User.findOneAndUpdate(
+                    { email: email },  // Điều kiện tìm kiếm
+                    { isVerified: true },  // Giá trị cần cập nhật
+                    { new: true }
+                )
+                resolve({
+                    status: 'OK',
+                    message: 'Verify successfully'
+                })
+            }
+
         } catch (e) {
             reject(e)
         }

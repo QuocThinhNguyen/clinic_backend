@@ -5,21 +5,21 @@ const AutoIncrement = pkg(mongoose);
 const { Schema } = mongoose;
 
 const doctorInfoSchema = new Schema({
-    doctorInforID: {
+    doctorInforId: {
         type: Number,
         unique: true
     },
-    doctorID: {
+    doctorId: {
         type: Number,
         ref: 'Doctor_info',
         required: true
     },
-    specialtyID: {
+    specialtyId: {
         type: Number,
         ref: 'Specialty',
         required: true
     },
-    clinicID: {
+    clinicId: {
         type: Number,
         ref: 'Clinic',
         required: true
@@ -38,7 +38,7 @@ const doctorInfoSchema = new Schema({
     }
 });
 
-doctorInfoSchema.plugin(AutoIncrement, { inc_field: 'doctorInforID', start_seq: 1 });
+doctorInfoSchema.plugin(AutoIncrement, { inc_field: 'doctorInforId', start_seq: 1 });
 const DoctorInfo = mongoose.model('DoctorInfo', doctorInfoSchema);
 
 export default DoctorInfo;

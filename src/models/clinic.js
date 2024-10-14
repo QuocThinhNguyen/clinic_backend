@@ -5,7 +5,7 @@ const AutoIncrement = pkg(mongoose);
 const { Schema } = mongoose;
 
 const clinicSchema = new Schema({
-    clinicID: {
+    clinicId: {
         type: Number,
         unique: true
     },
@@ -33,7 +33,7 @@ const clinicSchema = new Schema({
     }
 });
 
-clinicSchema.plugin(AutoIncrement, { inc_field: 'clinicID', start_seq: 1 });
+clinicSchema.plugin(AutoIncrement, { inc_field: 'clinicId', start_seq: 1 });
 const Clinic = mongoose.model('Clinic', clinicSchema);
 
 export default Clinic;

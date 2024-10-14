@@ -1,4 +1,5 @@
-import { handleResetPasswordTokenService, refreshTokenJwtService } from '../services/JwtService.js'
+import { handleResetPasswordTokenService, refreshTokenJwtService,createAndSendOTPService, generalOTPToken,
+    verifyUserService} from '../services/JwtService.js'
 import {createUserService, loginUserService, updateUserService, deleteUserService, getAllUserService, 
     getDetailsUserService, resetUserPasswordService} from '../services/UserService.js'
 
@@ -7,7 +8,7 @@ export const createUserController = async (req,res) => {
         const { fullname, email, password, confirmPassword, roleId } = req.body
         const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
         const isCheckEmail = reg.test(email)
-        if(!fullname || !email|| !password|| !confirmPassword){
+        if(!!email|| !password|| !confirmPassword){
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is required'
@@ -34,7 +35,7 @@ export const createUserController = async (req,res) => {
 
 export const loginUserController = async (req,res) => {
     try {
-        const { name, email, password, confirmPassword, phone } = req.body
+        const { email, password} = req.body
         const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
         const isCheckEmail = reg.test(email)
         if(!email|| !password){
@@ -100,6 +101,31 @@ export const handleResetPasswordTokenController = async (req, res) => {
     try {
         // Verify the token
         const response = await handleResetPasswordTokenService(token);
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+export const createAndSendOTPController = async (req, res) => {
+    try {
+        const otp_token = await generalOTPToken(req.body.email)
+        const response = await createAndSendOTPService(req.body, otp_token);
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+export const verifyUserController = async (req, res) => {
+    const otp_token = req.params.token
+    const otpCode = req.body.otpCode
+    try {
+        const response = await verifyUserService(otpCode, otp_token);
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({

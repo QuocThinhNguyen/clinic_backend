@@ -5,11 +5,11 @@ const AutoIncrement = pkg(mongoose);
 const { Schema } = mongoose;
 
 const scheduleSchema = new Schema({
-    scheduleID: {
+    scheduleId: {
         type: Number,
         unique: true
     },
-    doctorID: {
+    doctorId: {
         type: Number,
         ref: 'Doctor_info',
         required: true
@@ -32,7 +32,7 @@ const scheduleSchema = new Schema({
     }
 });
 
-scheduleSchema.plugin(AutoIncrement, { inc_field: 'scheduleID', start_seq: 1 });
+scheduleSchema.plugin(AutoIncrement, { inc_field: 'scheduleId', start_seq: 1 });
 
 const Schedule = mongoose.model('Schedule', scheduleSchema);
 

@@ -5,11 +5,11 @@ const AutoIncrement = pkg(mongoose);
 const { Schema } = mongoose;
 
 const pationRecodeSchema = new Schema({
-    patientRecordID: {
+    patientRecordId: {
         type: Number,
         unique: true
     },
-    patientID: {
+    patientId: {
         type: Number,
         unique: true,
         ref: 'Users',
@@ -49,7 +49,7 @@ const pationRecodeSchema = new Schema({
     }
 });
 
-bookingSchema.plugin(AutoIncrement, { inc_field: 'patientRecordID', start_seq: 1 });
+bookingSchema.plugin(AutoIncrement, { inc_field: 'patientRecordId', start_seq: 1 });
 const PationRecords = mongoose.model('PationRecords', pationRecodeSchema);
 
 export default PationRecords;

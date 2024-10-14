@@ -1,54 +1,44 @@
 import mongoose from 'mongoose';
 import pkg from 'mongoose-sequence';  // Import AutoIncrement
-const AutoIncrement  = pkg(mongoose);
+const AutoIncrement = pkg(mongoose);
 
 const { Schema } = mongoose;
 
 const doctorInfoSchema = new Schema({
-    id: {
+    doctorInforID: {
         type: Number,
         unique: true
     },
-    doctorId: {
+    doctorID: {
         type: Number,
         ref: 'Doctor_info',
         required: true
     },
-    priceId: {
-        type: String,
-        ref: 'AllCodes',
+    specialtyID: {
+        type: Number,
+        ref: 'Specialty',
         required: true
     },
-    provinceId: {
-        type: String,
-        ref: 'AllCodes',
-        required: true
-    },
-    paymentId: {
-        type: String,
-        ref: 'AllCodes',
-        required: true
-    },
-    addressClinic: {
-        type: String,
+    clinicID: {
+        type: Number,
         ref: 'Clinic',
         required: true
     },
-    nameClinic: {
+    price: {
         type: String,
-        ref: 'Clinic',
         required: true
     },
     note: {
         type: String
     },
-    count: {
-        type: Number,
-        default: 0
+    position: {
+        type: String,
+        required: true,
+        ref: 'Allcodes'
     }
 });
 
-doctorInfoSchema.plugin(AutoIncrement, { inc_field: 'id', start_seq: 1 });
+doctorInfoSchema.plugin(AutoIncrement, { inc_field: 'doctorInforID', start_seq: 1 });
 const DoctorInfo = mongoose.model('DoctorInfo', doctorInfoSchema);
 
 export default DoctorInfo;

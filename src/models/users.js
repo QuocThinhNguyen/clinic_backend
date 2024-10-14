@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import pkg from 'mongoose-sequence';  // Import AutoIncrement
-const AutoIncrement  = pkg(mongoose);
+const AutoIncrement = pkg(mongoose);
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-    userId: {
+    userID: {
         type: Number,
         unique: true
     },
@@ -28,15 +28,24 @@ const userSchema = new Schema({
         type: String,
         enum: ['Male', 'Female', 'Other']
     },
-    roleId: {
+    birthDate: {
+        type: Date
+    },
+    roleID: {
         type: String,
         default: 'R3'
     },
     phoneNumber: {
         type: Number
+    },
+    image: {
+        type: String
+    },
+    status: {
+        type: String
     }
 });
-userSchema.plugin(AutoIncrement, { inc_field: 'userId', start_seq: 1 });
+userSchema.plugin(AutoIncrement, { inc_field: 'userID', start_seq: 1 });
 
 const User = mongoose.model('Users', userSchema);
 

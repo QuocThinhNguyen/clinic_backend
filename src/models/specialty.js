@@ -1,17 +1,13 @@
 import mongoose from 'mongoose';
 import pkg from 'mongoose-sequence';  // Import AutoIncrement
-const AutoIncrement  = pkg(mongoose);
+const AutoIncrement = pkg(mongoose);
 
 const { Schema } = mongoose;
 
 const specialtySchema = new Schema({
-    id: {
+    specialtyID: {
         type: Number,
         unique: true
-    },
-    description: {
-        type: String,
-        required: true
     },
     image: {
         type: String,
@@ -23,7 +19,7 @@ const specialtySchema = new Schema({
     }
 });
 
-specialtySchema.plugin(AutoIncrement, { inc_field: 'id', start_seq: 1 });
+specialtySchema.plugin(AutoIncrement, { inc_field: 'specialtyID', start_seq: 1 });
 
 const Specialty = mongoose.model('Specialty', specialtySchema);
 

@@ -1,20 +1,25 @@
 import mongoose from 'mongoose';
 import pkg from 'mongoose-sequence';  // Import AutoIncrement
-const AutoIncrement  = pkg(mongoose);
+const AutoIncrement = pkg(mongoose);
 
 const { Schema } = mongoose;
 
 const historySchema = new Schema({
-    idHistory: {
+    historyID: {
         type: Number,
         unique: true
     },
-    patientId: {
+    patientID: {
         type: Number,
         ref: 'Users',
         required: true
     },
-    doctorId: {
+    patientRecordID: {
+        type: Number,
+        ref: 'PatientRecord',
+        required: true
+    },
+    doctorID: {
         type: Schema.Types.ObjectId,
         ref: 'Doctor_info',
         required: true
@@ -25,7 +30,7 @@ const historySchema = new Schema({
     }
 });
 
-historySchema.plugin(AutoIncrement, { inc_field: 'idHistory', start_seq: 1 });
+historySchema.plugin(AutoIncrement, { inc_field: 'historyID', start_seq: 1 });
 const History = mongoose.model('History', historySchema);
 
 export default History;

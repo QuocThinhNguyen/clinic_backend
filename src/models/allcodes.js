@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import pkg from 'mongoose-sequence';  // Import AutoIncrement
-const AutoIncrement  = pkg(mongoose);
+const AutoIncrement = pkg(mongoose);
 
 const { Schema } = mongoose;
 
@@ -9,7 +9,7 @@ const allCodesSchema = new Schema({
         type: Number,
         unique: true
     },
-    key: {
+    keyMap: {
         type: String,
         required: true
     },

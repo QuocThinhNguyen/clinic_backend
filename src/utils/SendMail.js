@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer'
 
-const sendMail = async (email, link) => {
+const sendMail = async (email, text, subject) => {
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 587,
@@ -15,8 +15,8 @@ const sendMail = async (email, link) => {
     const info = await transporter.sendMail({
         from: '"BenhVienThanhPho" <no-reply@benhvienthanhpho.com>', // sender address
         to: email, // list of receivers
-        subject: "Reset Password", // Subject line
-        text: `Click the link to reset your password: ${link}`
+        subject, // Subject line
+        text
     });
 
     return info

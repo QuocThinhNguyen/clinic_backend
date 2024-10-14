@@ -5,21 +5,21 @@ const AutoIncrement = pkg(mongoose);
 const { Schema } = mongoose;
 
 const markdownSchema = new Schema({
-    markdownID: {
+    markdownId: {
         type: Number,
         unique: true
     },
-    doctorID: {
+    doctorId: {
         type: Number,
         ref: 'Doctor_info',
         required: true
     },
-    clinicID: {
+    clinicId: {
         type: Number,
         ref: 'Clinic',
         required: true
     },
-    specialtyID: {
+    specialtyId: {
         type: Number,
         ref: 'Specialty',
         required: true
@@ -33,7 +33,7 @@ const markdownSchema = new Schema({
         required: true
     }
 });
-markdownSchema.plugin(AutoIncrement, { inc_field: 'markdownID', start_seq: 1 });
+markdownSchema.plugin(AutoIncrement, { inc_field: 'markdownId', start_seq: 1 });
 
 const Markdown = mongoose.model('Markdown', markdownSchema);
 

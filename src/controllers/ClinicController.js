@@ -15,7 +15,6 @@ const createClinic = async (req, res) => {
 
 const updateClinic = async (req, res) => {
     try {
-        console.log(req.params.id)
         const id = req.params.id;
         const info = await clinicService.updateClinic(id, req.body);
         return res.status(200).json(info);
@@ -28,7 +27,65 @@ const updateClinic = async (req, res) => {
     }
 }
 
+const getAllClinic = async (req, res) => {
+    try {
+        const data = await clinicService.getAllClinic();
+        return res.status(200).json(data)
+    } catch (err) {
+        console.log(err)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
+
+const getDetailClinic = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = await clinicService.getDetailClinic(id);
+        return res.status(200).json(data)
+    } catch (err) {
+        console.log(err)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
+
+const deleteClinic = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = await clinicService.deleteClinic(id);
+        return res.status(200).json(data)
+    } catch (err) {
+        console.log(err)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
+
+const filterClinics = async (req, res) => {
+    try {
+        const data = await clinicService.filterClinics(req.body);
+        return res.status(200).json(data)
+    } catch (err) {
+        console.log(err)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
+
 export default {
     createClinic,
-    updateClinic
+    updateClinic,
+    getAllClinic,
+    getDetailClinic,
+    deleteClinic,
+    filterClinics
 }

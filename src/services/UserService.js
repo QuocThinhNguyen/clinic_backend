@@ -40,7 +40,7 @@ export const createUserService = (newUser) => {
 
 export const loginUserService = (userLogin) => {
     return new Promise(async (resolve, reject) => {
-        const { name, email, password, confirmPassword, phone } = userLogin
+        const { email, password } = userLogin
         try {
             const checkUser = await User.findOne({
                 email: email
@@ -50,6 +50,13 @@ export const loginUserService = (userLogin) => {
                     status: 'ERR',
                     message: 'The email is not defined'
                 })
+            } else {
+                if(!checkUser.isVerified){
+                    resolve({
+                        status: 'ERR',
+                        message: 'The email is not verified'
+                    })
+                }
             }
             const comparePassword = bcrypt.compareSync(password, checkUser.password)
 
@@ -59,6 +66,7 @@ export const loginUserService = (userLogin) => {
                     message: 'The user or password is incorrect',
                 })
             }
+            
             const access_token = await generalAccessToken({
                 userId: checkUser.userId,
                 roleId: checkUser.roleId
@@ -99,8 +107,10 @@ export const resetUserPasswordService = (email) => {
             const token = await generalResetPasswordToken(email);
             // Create reset password link
             const resetLink = `${process.env.WEB_LINK}/user/reset-password/${token}`;
-
-            sendMail(email,resetLink)
+            // Create text
+            const text = `Click the link to reset your password: ${resetLink}`
+            const subject = 'Reset password'
+            sendMail(email, text, subject)
 
             resolve({
                 status: 'OK',

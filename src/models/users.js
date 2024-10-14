@@ -4,7 +4,7 @@ const AutoIncrement = pkg(mongoose);
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-    userID: {
+    userId: {
         type: Number,
         unique: true
     },
@@ -19,7 +19,6 @@ const userSchema = new Schema({
     },
     fullname: {
         type: String,
-        required: true
     },
     address: {
         type: String
@@ -31,7 +30,7 @@ const userSchema = new Schema({
     birthDate: {
         type: Date
     },
-    roleID: {
+    roleId: {
         type: String,
         default: 'R3'
     },
@@ -41,11 +40,15 @@ const userSchema = new Schema({
     image: {
         type: String
     },
-    status: {
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    otpCode: {
         type: String
     }
 });
-userSchema.plugin(AutoIncrement, { inc_field: 'userID', start_seq: 1 });
+userSchema.plugin(AutoIncrement, { inc_field: 'userId', start_seq: 1 });
 
 const User = mongoose.model('Users', userSchema);
 

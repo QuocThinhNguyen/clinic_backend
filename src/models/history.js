@@ -5,22 +5,22 @@ const AutoIncrement = pkg(mongoose);
 const { Schema } = mongoose;
 
 const historySchema = new Schema({
-    historyID: {
+    historyId: {
         type: Number,
         unique: true
     },
-    patientID: {
+    patientId: {
         type: Number,
         ref: 'Users',
         required: true
     },
-    patientRecordID: {
+    patientRecordId: {
         type: Number,
         ref: 'PatientRecord',
         required: true
     },
-    doctorID: {
-        type: Schema.Types.ObjectId,
+    doctorId: {
+        type: Number,
         ref: 'Doctor_info',
         required: true
     },
@@ -30,7 +30,7 @@ const historySchema = new Schema({
     }
 });
 
-historySchema.plugin(AutoIncrement, { inc_field: 'historyID', start_seq: 1 });
+historySchema.plugin(AutoIncrement, { inc_field: 'historyId', start_seq: 1 });
 const History = mongoose.model('History', historySchema);
 
 export default History;

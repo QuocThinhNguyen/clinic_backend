@@ -5,7 +5,7 @@ const AutoIncrement = pkg(mongoose);
 const { Schema } = mongoose;
 
 const bookingSchema = new Schema({
-    bookingID: {
+    bookingId: {
         type: Number,
         unique: true
     },
@@ -14,17 +14,17 @@ const bookingSchema = new Schema({
         ref: 'AllCodes',
         required: true
     },
-    doctorID: {
+    doctorId: {
         type: Number,
         ref: 'Doctor_info',
         required: true
     },
-    patientID: {
+    patientId: {
         type: Number,
         ref: 'Users',
         required: true
     },
-    patientRecordID: {
+    patientRecordId: {
         type: Number,
         ref: 'PatientRecord',
         required: true
@@ -39,7 +39,7 @@ const bookingSchema = new Schema({
     }
 });
 
-bookingSchema.plugin(AutoIncrement, { inc_field: 'bookingID', start_seq: 1 });
+bookingSchema.plugin(AutoIncrement, { inc_field: 'bookingId', start_seq: 1 });
 const Booking = mongoose.model('Booking', bookingSchema);
 
 export default Booking;

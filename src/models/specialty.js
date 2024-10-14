@@ -5,7 +5,7 @@ const AutoIncrement = pkg(mongoose);
 const { Schema } = mongoose;
 
 const specialtySchema = new Schema({
-    specialtyID: {
+    specialtyId: {
         type: Number,
         unique: true
     },
@@ -19,7 +19,7 @@ const specialtySchema = new Schema({
     }
 });
 
-specialtySchema.plugin(AutoIncrement, { inc_field: 'specialtyID', start_seq: 1 });
+specialtySchema.plugin(AutoIncrement, { inc_field: 'specialtyId', start_seq: 1 });
 
 const Specialty = mongoose.model('Specialty', specialtySchema);
 

@@ -99,7 +99,6 @@ export const resetUserPasswordService = (email) => {
             const token = await generalResetPasswordToken(email);
             // Create reset password link
             const resetLink = `${process.env.WEB_LINK}/user/reset-password/${token}`;
-            console.log('resetLink: ',resetLink)
 
             sendMail(email,resetLink)
 

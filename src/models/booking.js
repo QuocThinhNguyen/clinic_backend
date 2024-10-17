@@ -19,11 +19,6 @@ const bookingSchema = new Schema({
         ref: 'Doctor_info',
         required: true
     },
-    patientId: {
-        type: Number,
-        ref: 'Users',
-        required: true
-    },
     patientRecordId: {
         type: Number,
         ref: 'PatientRecord',
@@ -34,6 +29,14 @@ const bookingSchema = new Schema({
         required: true
     },
     timeType: {
+        type: String,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    reason: {
         type: String,
         required: true
     }

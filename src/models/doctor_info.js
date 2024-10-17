@@ -35,6 +35,9 @@ const doctorInfoSchema = new Schema({
         type: String,
         required: true,
         ref: 'Allcodes'
+    },
+    description: {
+        type: String
     }
 });
 

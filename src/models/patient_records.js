@@ -11,7 +11,6 @@ const patientRecordsSchema = new Schema({
   },
   patientId: {
     type: Number,
-    unique: true,
     ref: "Users",
   },
   fullname: {
@@ -54,5 +53,5 @@ patientRecordsSchema.plugin(AutoIncrement, {
   start_seq: 1,
 });
 
-const PatientRecords = mongoose.model('PatientRecords', patientRecordsSchema);
+const PatientRecords = mongoose.model("PatientRecords", patientRecordsSchema);
 export default PatientRecords;

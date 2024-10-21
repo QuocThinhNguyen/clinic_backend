@@ -3,8 +3,14 @@ import bookingService from "../services/BookingService.js";
 
 const getAllBooking = async (req, res) => {
   try {
-    const { date, status, page = 1, limit = 10 } = req.query;
+    const { search, date, status, page = 1, limit = 10 } = req.query;
     let query = {};
+
+    console.log("search", search);
+    if (search) {
+      query.name = search.replace(/\s+/g, " ").trim(); //Lọc theo tên nếu có
+    }
+
     if (status) {
       query.status = status.replace(/\s+/g, " ").trim(); //Lọc theo trạng thái nếu có
     }
@@ -21,8 +27,8 @@ const getAllBooking = async (req, res) => {
         $lt: new Date(date + "T23:59:59Z"),
       };
     }
-
-    const data = await bookingService.getAllBooking(query,page,limit);
+    console.log("query", query);
+    const data = await bookingService.getAllBooking(query, page, limit);
     return res.status(200).json(data);
   } catch (e) {
     return res.status(404).json({

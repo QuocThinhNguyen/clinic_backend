@@ -1,12 +1,42 @@
 import Booking from "../models/booking.js";
+import Users from "../models/users.js";
+import PatientRecords from "../models/patient_records.js";
 
 const getAllBooking = (query, page, limit) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const allBookings = await Booking.find({
-        status: { $regex: query.status, $options: "i" },
-        appointmentDate: query.appointmentDate,
-      })
+      const filter = {};
+      let userId = [];
+      let patientRecordId = [];
+      if (query.name) {
+        const users = await Users.find({
+          fullname: { $regex: query.name, $options: "i" },
+        });
+        const patientRecords = await PatientRecords.find({
+          fullname: { $regex: query.name, $options: "i" },
+        });
+
+        userId = users.map((user) => user.userId);
+        patientRecordId = patientRecords.map(
+          (patientRecord) => patientRecord.patientRecordId
+        );
+      }
+
+      if (userId.length > 0) {
+        filter.doctorId = { $in: userId };
+      }
+
+      if (patientRecordId.length > 0) {
+        filter.patientRecordId = { $in: patientRecordId };
+      }
+      if (query.status) {
+        filter.status = { $regex: query.status, $options: "i" };
+      }
+      if (query.appointmentDate) {
+        filter.appointmentDate = query.appointmentDate;
+      }
+
+      const allBookings = await Booking.find(filter)
         .skip((page - 1) * limit)
         .limit(limit)
         .populate("doctorId", "fullname email")

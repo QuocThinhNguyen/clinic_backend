@@ -260,7 +260,9 @@ export const refreshToken = async (req, res) => {
 
 export const getUserByNameOrEmailController = async (req, res) => {
   try {
-    const keyword = req.query.keyword;
+    const keyword = req.query.keyword.replace(/\s+/g, " ").trim();
+    console.log("keyword", keyword);
+
     if (!keyword) {
       return res.status(200).json({
         status: "ERR",

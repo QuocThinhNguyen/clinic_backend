@@ -1,9 +1,14 @@
 import Booking from "../models/booking.js";
 
-const getAllBooking = () => {
+const getAllBooking = (query, page, limit) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const allBookings = await Booking.find({})
+      const allBookings = await Booking.find({
+        status: { $regex: query.status, $options: "i" },
+        appointmentDate: query.appointmentDate,
+      })
+        .skip((page - 1) * limit)
+        .limit(limit)
         .populate("doctorId", "fullname email")
         .populate({
           path: "doctorId",
@@ -24,6 +29,8 @@ const getAllBooking = () => {
         status: "OK",
         message: "SUCCESS",
         data: allBookings,
+        currentPage: page,
+        limit: limit,
       });
     } catch (e) {
       reject(e);

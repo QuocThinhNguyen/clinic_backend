@@ -143,6 +143,16 @@ export const resetUserPasswordService = (email) => {
 
 export const updateUserService = (id, data) => {
   return new Promise(async (resolve, reject) => {
+    const {
+      password,
+      fullname,
+      gender,
+      birthDate,
+      address,
+      phoneNumber,
+      image,
+      roleId,
+    } = data;
     try {
       const checkUser = await User.findOne({
         userId: id,
@@ -153,10 +163,21 @@ export const updateUserService = (id, data) => {
           message: "The user is not defined",
         });
       }
+      // const hash = bcrypt.hashSync(password, 10);
+      const updateData = {};
+      if (data.password)
+        updateData.password = bcrypt.hashSync(data.password, 10);
+      if (data.fullname) updateData.fullname = data.fullname;
+      if (data.gender) updateData.gender = data.gender;
+      if (data.birthDate) updateData.birthDate = data.birthDate;
+      if (data.address) updateData.address = data.address;
+      if (data.phoneNumber) updateData.phoneNumber = data.phoneNumber;
+      if (data.image) updateData.image = data.image;
+      if (data.roleId) updateData.roleId = data.roleId;
 
       const updatedUser = await User.findOneAndUpdate(
         { userId: id }, // Điều kiện tìm kiếm
-        data, // Giá trị cần cập nhật
+        updateData, // Giá trị cần cập nhật
         { new: true }
       );
       resolve({

@@ -24,6 +24,11 @@ const historySchema = new Schema({
         ref: 'Doctor_info',
         required: true
     },
+    bookingId: {
+        type: Number,
+        ref: 'Booking',
+        required: true
+    },
     description: {
         type: String,
         required: true

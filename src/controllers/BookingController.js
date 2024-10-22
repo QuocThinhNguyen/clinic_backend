@@ -1,8 +1,34 @@
+import { query } from "express";
 import bookingService from "../services/BookingService.js";
 
 const getAllBooking = async (req, res) => {
   try {
-    const data = await bookingService.getAllBooking();
+    const { search, date, status, page = 1, limit = 10 } = req.query;
+    let query = {};
+
+    console.log("search", search);
+    if (search) {
+      query.name = search.replace(/\s+/g, " ").trim(); //Lọc theo tên nếu có
+    }
+
+    if (status) {
+      query.status = status.replace(/\s+/g, " ").trim(); //Lọc theo trạng thái nếu có
+    }
+
+    if (date) {
+      const parsedDate = new Date(date);
+      if (isNaN(parsedDate.getTime())) {
+        return res.status(400).json({
+          message: "Invalid date format",
+        });
+      }
+      query.appointmentDate = {
+        $gte: new Date(date + "T00:00:00Z"),
+        $lt: new Date(date + "T23:59:59Z"),
+      };
+    }
+    console.log("query", query);
+    const data = await bookingService.getAllBooking(query, page, limit);
     return res.status(200).json(data);
   } catch (e) {
     return res.status(404).json({
@@ -14,8 +40,8 @@ const getAllBooking = async (req, res) => {
 const getBooking = async (req, res) => {
   try {
     const bookingId = req.params.id;
-    console.log("bookingId:",bookingId);
-    
+    console.log("bookingId:", bookingId);
+
     if (!bookingId) {
       return res.status(200).json({
         status: "ERR",
@@ -41,7 +67,7 @@ const createBooking = async (req, res) => {
       message: e.message,
     });
   }
-}
+};
 
 const updateBooking = async (req, res) => {
   try {
@@ -57,7 +83,7 @@ const updateBooking = async (req, res) => {
     return res.status(200).json(response);
   } catch (e) {
     console.log("Lỗi");
-    
+
     return res.status(404).json({
       message: e.message,
     });

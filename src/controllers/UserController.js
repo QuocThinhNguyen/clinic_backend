@@ -26,11 +26,14 @@ export const createUserController = async (req, res) => {
       birthDate,
       address,
       phoneNumber,
-      image,
       roleId,
     } = req.body;
     const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
     const isCheckEmail = reg.test(email);
+    console.log("req.body", req.body);
+    
+    console.log("req.file", req.file);
+    
     if (
       !email ||
       !password ||
@@ -39,7 +42,6 @@ export const createUserController = async (req, res) => {
       !birthDate ||
       !address ||
       !phoneNumber ||
-      !image ||
       !roleId
     ) {
       return res.status(200).json({
@@ -52,7 +54,16 @@ export const createUserController = async (req, res) => {
         message: "The input is not email",
       });
     }
-    const response = await createUserService(req.body);
+
+     // Lấy đường dẫn ảnh từ `req.file`
+     const image = req.file ? `${req.file.filename}` : null; // Đường dẫn ảnh
+
+     const userData = {
+      ...req.body,
+      image,
+     }
+
+    const response = await createUserService(userData);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({
@@ -165,7 +176,15 @@ export const verifyUserController = async (req, res) => {
 export const updateUserController = async (req, res) => {
   try {
     const userId = req.params.id;
-    const data = req.body;
+    // Lấy đường dẫn ảnh từ `req.file`
+    const image = req.file ? `${req.file.filename}` : null; // Đường dẫn ảnh
+    const data = {
+      ...req.body,
+      image,
+    }
+    console.log("req.body", req.body);
+    
+    console.log("req.file", req.file);
     if (!userId) {
       return res.status(200).json({
         status: "ERR",
@@ -260,7 +279,9 @@ export const refreshToken = async (req, res) => {
 
 export const getUserByNameOrEmailController = async (req, res) => {
   try {
-    const keyword = req.query.keyword;
+    const keyword = req.query.keyword.replace(/\s+/g, " ").trim();
+    console.log("keyword", keyword);
+
     if (!keyword) {
       return res.status(200).json({
         status: "ERR",

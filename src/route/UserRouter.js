@@ -18,6 +18,7 @@ import {
   authMiddleware,
   authUserMiddleware,
 } from "../middlewares/authMiddleware.js";
+import upload from "../utils/fileUpload.js";
 
 const router = express.Router();
 
@@ -33,8 +34,8 @@ router.post("/refresh_token", refreshToken);
 router.get("/search", getUserByNameOrEmailController); //Tìm kiếm user theo tên, email
 router.get("/", authMiddleware, getAllUserController); //Lấy tất cả user
 router.get("/:id", authMiddleware, getDetailsUserController); //Lấy thông tin một user
-router.post("/", authMiddleware, createUserController); //Thêm user
-router.put("/:id", authMiddleware, updateUserController); //Cập nhật user
+router.post("/", authMiddleware, upload.single("image"), createUserController); //Thêm user
+router.put("/:id", authMiddleware,upload.single("image"), updateUserController); //Cập nhật user
 router.delete("/:id", authMiddleware, deleteUserController); //Xóa user
 
 export default router;

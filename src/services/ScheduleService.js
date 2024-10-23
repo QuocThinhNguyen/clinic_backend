@@ -198,19 +198,21 @@ const createSchedule = (doctorId, scheduleDate, timeTypes) => {
 
 const updateSchedule = (id, timeTypes) => {};
 
-const deleteSchedule = (id) => {
+const deleteSchedule = (id, date) => {
   return new Promise(async (resolve, reject) => {
     try {
-      if (!id) {
-        return reject(new Error("Missing required field: id"));
-      }
       console.log("service");
 
       console.log("id:", id);
 
-      const deletedSchedule = await Schedule.deleteMany({
-        doctorId: id,
-      });
+      const filter = {};
+      filter.doctorId = id;
+      filter.scheduleDate = {
+        $gte: new Date(date + "T00:00:00Z"),
+        $lt: new Date(date + "T23:59:59Z"),
+      };
+
+      const deletedSchedule = await Schedule.deleteMany(filter);
       console.log("doctorId:", id);
 
       console.log("deletedSchedule:", deletedSchedule);

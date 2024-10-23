@@ -75,8 +75,15 @@ const updateSchedule = async (req, res) => {
 
 const deleteSchedule = async (req, res) => {
   try {
+    if(!req.params.id && !req.query.date){
+      return res.status(200).json({
+        status: "ERR",
+        message: "The doctorId and date are required",
+      });
+    }
     const id = req.params.id;
-    const response = await scheduleService.deleteSchedule(id);
+    const date = req.query.date;
+    const response = await scheduleService.deleteSchedule(id, date);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({

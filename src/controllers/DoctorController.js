@@ -14,6 +14,19 @@ const getDoctorInfor = async (req, res) => {
     }
 }
 
+const getAllDoctor = async (req, res) => {
+    try {
+        const data = await doctorInforService.getAllDoctor();
+        return res.status(200).json(data);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
+
 const updateDoctorInfor = async (req, res) => {
     try {
         const id = req.params.id;
@@ -44,5 +57,6 @@ const searchDoctor = async (req, res) => {
 export default {
     getDoctorInfor,
     updateDoctorInfor,
-    searchDoctor
+    searchDoctor,
+    getAllDoctor
 }

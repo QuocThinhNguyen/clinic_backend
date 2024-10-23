@@ -47,6 +47,50 @@ const getDoctorInfor = (id) => {
     });
 };
 
+const getAllDoctor = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allDoctor = await doctorInfor.find({})
+                .populate({
+                    path: 'doctorId',
+                    model: 'Users',
+                    localField: 'doctorId',
+                    foreignField: 'userId',
+                    select: 'email fullname address gender birthDate phoneNumber image'
+                })
+                .populate({
+                    path: 'specialtyId',
+                    model: 'Specialty',
+                    localField: 'specialtyId',
+                    foreignField: 'specialtyId',
+                    select: 'name'
+                })
+                .populate({
+                    path: 'clinicId',
+                    model: 'Clinic',
+                    localField: 'clinicId',
+                    foreignField: 'clinicId',
+                    select: 'name'
+                })
+            // .populate({
+            //     path: 'position',
+            //     model: 'Allcodes',
+            //     localField: 'position',
+            //     foreignField: 'keyMap',
+            //     select: 'value'
+            // })
+
+            resolve({
+                errCode: 0,
+                errMessage: "Success",
+                data: allDoctor
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 const updateDoctorInfor = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -117,6 +161,7 @@ const searchDoctor = (data) => {
             //     query.fullname = { $regex: data, $options: 'i' }; // 'i' để không phân biệt chữ hoa chữ thường
             // }
             const doctorFind = await users.find({
+                roleId: 'R2',
                 $or: [
                     { fullname: { $regex: data, $options: 'i' } }
                 ]
@@ -140,8 +185,11 @@ const searchDoctor = (data) => {
     });
 }
 
+
+
 export default {
     getDoctorInfor,
     updateDoctorInfor,
-    searchDoctor
+    searchDoctor,
+    getAllDoctor
 };

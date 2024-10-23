@@ -3,6 +3,7 @@ import userRouter from "./UserRouter.js"
 import clinicRouter from "./ClinicRouter.js"
 import bookingRouter from "./BookingRouter.js"
 import patientRecordsRouter from "./PatientRecordsRouter.js"
+import scheduleRouter from "./ScheduleRouter.js"
 
 const routes = (app) => {
     app.use('/', homePageRouter)
@@ -10,6 +11,7 @@ const routes = (app) => {
     app.use('/clinic', clinicRouter)
     app.use('/booking',bookingRouter)  
     app.use('/patientrecord',patientRecordsRouter) 
+    app.use('/schedule',scheduleRouter)
 }
 
 export default routes

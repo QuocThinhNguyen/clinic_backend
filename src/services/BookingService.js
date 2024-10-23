@@ -39,7 +39,6 @@ const getAllBooking = (query, page, limit) => {
       const allBookings = await Booking.find(filter)
         .skip((page - 1) * limit)
         .limit(limit)
-        .populate("doctorId", "fullname email")
         .populate({
           path: "doctorId",
           model: "Users",

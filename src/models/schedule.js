@@ -11,16 +11,18 @@ const scheduleSchema = new Schema({
     },
     doctorId: {
         type: Number,
-        ref: 'Doctor_info',
+        ref: 'Users',
         required: true
     },
     currentNumber: {
         type: Number,
-        required: true
+        required: true,
+        default:0
     },
     maxNumber: {
         type: Number,
-        required: true
+        required: true,
+        default: process.env.MAX_NUMBER || 2
     },
     scheduleDate: {
         type: Date,

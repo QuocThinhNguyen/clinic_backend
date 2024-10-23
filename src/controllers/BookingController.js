@@ -90,9 +90,21 @@ const updateBooking = async (req, res) => {
   }
 };
 
+const getBookingByDoctorId = async (req, res) => {
+  try {
+    const id = req.params.doctorId;
+    const response = await bookingService.getBookingByDoctorId(id);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e.message,
+    });
+  }
+}
 export default {
   getAllBooking,
   getBooking,
   createBooking,
   updateBooking,
+  getBookingByDoctorId
 };

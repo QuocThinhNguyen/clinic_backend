@@ -2,7 +2,12 @@ import specialtyService from '../services/SpecialtyService.js';
 
 const createSpecialty = async (req, res) => {
     try {
-        const infor = await specialtyService.createSpecialty(req.body);
+        const image = req.file ? `${req.file.filename}` : null;
+        const specialtyData = {
+            ...req.body,
+            image
+        }
+        const infor = await specialtyService.createSpecialty(specialtyData);
         return res.status(200).json(infor);
     } catch (err) {
         console.log(err)

@@ -1,6 +1,7 @@
 import Booking from "../models/booking.js";
 import Users from "../models/users.js";
 import PatientRecords from "../models/patient_records.js";
+// import { promises } from "nodemailer/lib/xoauth2/index.js";
 
 const getAllBooking = (query, page, limit) => {
   return new Promise(async (resolve, reject) => {
@@ -149,9 +150,48 @@ const updateBooking = (id, data) => {
   });
 };
 
+const getBookingByDoctorId = (doctorId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const data = await Booking.find({
+        doctorId: doctorId
+      })
+        .populate({
+          path: "doctorId",
+          model: "Users",
+          localField: "doctorId",
+          foreignField: "userId",
+          select: "fullname",
+        })
+        .populate({
+          path: "patientRecordId",
+          model: "PatientRecords",
+          localField: "patientRecordId",
+          foreignField: "patientRecordId",
+          select: "fullname gender birthDate phoneNumber CCCD email job address"
+        })
+      if (data.length === 0) {
+        resolve({
+          status: "ERR",
+          message: "The booking is not defined",
+        });
+      } else {
+        resolve({
+          status: "OK",
+          message: "SUCCESS",
+          data: data,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
 export default {
   getAllBooking,
   getBooking,
   createBooking,
   updateBooking,
+  getBookingByDoctorId
 };

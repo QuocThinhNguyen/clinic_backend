@@ -25,6 +25,30 @@ const getAllScheduleByDate = async (req, res) => {
   }
 };
 
+const createSchedule = async (req, res) => {
+  try {
+    const doctorId = req.body.doctorId;
+    const scheduleDate = req.body.scheduleDate;
+    const timeTypes = req.body.timeTypes;
+
+    console.log("doctorId:", doctorId);
+    console.log("scheduleDate:", scheduleDate);
+    console.log("timeTypes:", timeTypes);
+
+    const response = await scheduleService.createSchedule(
+      doctorId,
+      scheduleDate,
+      timeTypes
+    );
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e.message,
+    });
+  }
+};
+
 export default {
   getAllScheduleByDate,
+  createSchedule,
 };

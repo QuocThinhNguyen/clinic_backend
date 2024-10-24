@@ -16,17 +16,11 @@ const getAllBooking = (query, page, limit) => {
         const patientRecords = await PatientRecords.find({
           fullname: { $regex: query.name, $options: "i" },
         });
-        console.log("name:", query.name);
-
-        console.log("users", users);
-        console.log("patientRecords", patientRecords);
 
         userId = users.map((user) => user.userId);
         patientRecordId = patientRecords.map(
           (patientRecord) => patientRecord.patientRecordId
         );
-        console.log("userId", userId);
-        console.log("patientRecordId", patientRecordId);
       }
 
       // Nếu không tìm thấy doctorId và patientRecordId phù hợp
@@ -54,8 +48,6 @@ const getAllBooking = (query, page, limit) => {
         filter.appointmentDate = query.appointmentDate;
       }
 
-      console.log("filter", filter);
-
       const allBookings = await Booking.find(filter)
         .skip((page - 1) * limit)
         .limit(limit)
@@ -73,8 +65,6 @@ const getAllBooking = (query, page, limit) => {
           foreignField: "patientRecordId",
           select: "fullname gender phoneNumber birthDate",
         });
-
-      console.log("allBookings", allBookings);
 
       resolve({
         status: "OK",

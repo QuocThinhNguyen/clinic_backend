@@ -1,25 +1,22 @@
-import clinic from "../models/clinic.js"
+import specialty from '../models/specialty.js';
 
-const createClinic = (data) => {
+const createSpecialty = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.address || !data.description || !data.image || !data.name || !data.email || !data.phoneNumber) {
+            if (!data.description || !data.image || !data.name) {
                 resolve({
                     errCode: 1,
                     errMessage: "Missing required fields"
                 })
             } else {
-                await clinic.create({
+                await specialty.create({
                     name: data.name,
-                    address: data.address,
                     image: data.image,
-                    email: data.email,
-                    phoneNumber: data.phoneNumber,
                     description: data.description
                 })
                 resolve({
                     errCode: 0,
-                    message: "Create clinic successfully"
+                    message: "Create speacialty successfully"
                 })
             }
         } catch (e) {
@@ -28,30 +25,30 @@ const createClinic = (data) => {
     })
 }
 
-const updateClinic = (id, data) => {
+const updateSpecialty = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
 
-            const checkClinic = await clinic.findOne({
-                clinicId: id
+            const checkSpecialty = await specialty.findOne({
+                specialtyId: id
             })
 
-            if (!checkClinic) {
+            if (!checkSpecialty) {
                 resolve({
                     errCode: 2,
                     errMessage: "Missing required parameter"
                 });
             }
 
-            await clinic.updateOne(
-                { clinicId: id },
+            await specialty.updateOne(
+                { specialtyId: id },
                 data,
                 { new: true }
             )
 
             resolve({
                 errCode: 0,
-                message: "Update clinic successfully"
+                message: "Update specialty successfully"
             })
         } catch (e) {
             reject(e)
@@ -59,14 +56,14 @@ const updateClinic = (id, data) => {
     })
 }
 
-const getAllClinic = () => {
+const getAllSpecialty = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const clinics = await clinic.find()
+            const specialties = await specialty.find()
             resolve({
                 errCode: 0,
-                message: "Get all clinic successfully",
-                data: clinics
+                message: "Get all specialty successfully",
+                data: specialties
             })
 
         } catch (e) {
@@ -75,22 +72,22 @@ const getAllClinic = () => {
     })
 }
 
-const getDetailClinic = (id) => {
+const getDetailSpecialty = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const clinicData = await clinic.findOne({
-                clinicId: id
+            const specialtyData = await specialty.findOne({
+                specialtyId: id
             })
-            if (!clinicData) {
+            if (!specialtyData) {
                 resolve({
                     errCode: 2,
-                    errMessage: "Clinic is not defined"
+                    errMessage: "Specialty is not defined"
                 })
             }
             resolve({
                 errCode: 0,
-                message: "Get clinic successfully",
-                data: clinicData
+                message: "Get specialty successfully",
+                data: specialtyData
             })
         } catch (e) {
             reject(e)
@@ -98,27 +95,27 @@ const getDetailClinic = (id) => {
     })
 }
 
-const deleteClinic = (id) => {
+const deleteSpecialty = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const findClinic = await clinic.findOne({
-                clinicId: id
+            const findSpecialty = await specialty.findOne({
+                specialtyId: id
             })
 
-            if (!findClinic) {
+            if (!findSpecialty) {
                 resolve({
                     errCode: 2,
-                    errMessage: "Clinic is not defined"
+                    errMessage: "Specialty is not defined"
                 })
             }
 
-            await clinic.deleteOne({
-                clinicId: id
+            await specialty.deleteOne({
+                specialtyId: id
             })
 
             resolve({
                 errCode: 0,
-                message: "Delete clinic successfully"
+                message: "Delete specialty successfully"
             })
         } catch (e) {
             reject(e)
@@ -126,7 +123,7 @@ const deleteClinic = (id) => {
     })
 }
 
-const filterClinics = (data) => {
+const filterSpecialty = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             // Sử dụng biểu thức chính quy để tìm kiếm không chính xác
@@ -134,22 +131,19 @@ const filterClinics = (data) => {
             if (data.name) {
                 query.name = { $regex: data.name, $options: 'i' }; // 'i' để không phân biệt chữ hoa chữ thường
             }
-            if (data.address) {
-                query.address = { $regex: data.address, $options: 'i' };
-            }
-            // Thêm các điều kiện tìm kiếm khác nếu cần
 
-            const clinics = await clinic.find(query);
-            if (clinics.length === 0) {
+            const specialtyData = await specialty.find(query);
+
+            if (specialtyData.length === 0) {
                 resolve({
                     errCode: 1,
-                    errMessage: "No clinic found"
+                    message: "No specialty found"
                 });
             } else {
                 resolve({
                     errCode: 0,
-                    message: "Filter clinic successfully",
-                    data: clinics
+                    message: "Filter specialty successfully",
+                    data: specialtyData
                 });
             }
         } catch (e) {
@@ -159,10 +153,10 @@ const filterClinics = (data) => {
 };
 
 export default {
-    createClinic,
-    updateClinic,
-    getAllClinic,
-    getDetailClinic,
-    deleteClinic,
-    filterClinics
+    createSpecialty,
+    updateSpecialty,
+    getAllSpecialty,
+    getDetailSpecialty,
+    deleteSpecialty,
+    filterSpecialty
 }

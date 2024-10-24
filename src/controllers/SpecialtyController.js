@@ -1,14 +1,13 @@
-import clinicService from "../services/ClinicService.js"
+import specialtyService from '../services/SpecialtyService.js';
 
-const createClinic = async (req, res) => {
+const createSpecialty = async (req, res) => {
     try {
         const image = req.file ? `${req.file.filename}` : null;
-        const clinicData = {
+        const specialtyData = {
             ...req.body,
             image
         }
-
-        const infor = await clinicService.createClinic(clinicData);
+        const infor = await specialtyService.createSpecialty(specialtyData);
         return res.status(200).json(infor);
     } catch (err) {
         console.log(err)
@@ -19,10 +18,10 @@ const createClinic = async (req, res) => {
     }
 }
 
-const updateClinic = async (req, res) => {
+const updateSpecialty = async (req, res) => {
     try {
         const id = req.params.id;
-        const info = await clinicService.updateClinic(id, req.body);
+        const info = await specialtyService.updateSpecialty(id, req.body);
         return res.status(200).json(info);
     } catch (err) {
         console.log(err)
@@ -33,9 +32,9 @@ const updateClinic = async (req, res) => {
     }
 }
 
-const getAllClinic = async (req, res) => {
+const getAllSpecialty = async (req, res) => {
     try {
-        const data = await clinicService.getAllClinic();
+        const data = await specialtyService.getAllSpecialty();
         return res.status(200).json(data)
     } catch (err) {
         console.log(err)
@@ -46,10 +45,10 @@ const getAllClinic = async (req, res) => {
     }
 }
 
-const getDetailClinic = async (req, res) => {
+const getDetailSpecialty = async (req, res) => {
     try {
         const id = req.params.id;
-        const data = await clinicService.getDetailClinic(id);
+        const data = await specialtyService.getDetailSpecialty(id);
         return res.status(200).json(data)
     } catch (err) {
         console.log(err)
@@ -60,10 +59,10 @@ const getDetailClinic = async (req, res) => {
     }
 }
 
-const deleteClinic = async (req, res) => {
+const deleteSpecialty = async (req, res) => {
     try {
         const id = req.params.id;
-        const data = await clinicService.deleteClinic(id);
+        const data = await specialtyService.deleteSpecialty(id);
         return res.status(200).json(data)
     } catch (err) {
         console.log(err)
@@ -74,9 +73,9 @@ const deleteClinic = async (req, res) => {
     }
 }
 
-const filterClinics = async (req, res) => {
+const filterSpecialty = async (req, res) => {
     try {
-        const data = await clinicService.filterClinics(req.body);
+        const data = await specialtyService.filterSpecialty(req.body);
         return res.status(200).json(data)
     } catch (err) {
         console.log(err)
@@ -88,10 +87,10 @@ const filterClinics = async (req, res) => {
 }
 
 export default {
-    createClinic,
-    updateClinic,
-    getAllClinic,
-    getDetailClinic,
-    deleteClinic,
-    filterClinics
+    createSpecialty,
+    updateSpecialty,
+    getAllSpecialty,
+    getDetailSpecialty,
+    deleteSpecialty,
+    filterSpecialty
 }

@@ -11,7 +11,7 @@ const doctorInfoSchema = new Schema({
     },
     doctorId: {
         type: Number,
-        ref: 'Doctor_info',
+        ref: 'Users',
         required: true
     },
     specialtyId: {
@@ -35,6 +35,9 @@ const doctorInfoSchema = new Schema({
         type: String,
         required: true,
         ref: 'Allcodes'
+    },
+    description: {
+        type: String
     }
 });
 

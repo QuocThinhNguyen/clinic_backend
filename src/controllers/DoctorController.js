@@ -37,6 +37,7 @@ const updateDoctorInfor = async (req, res) => {
         }
 
         const data = await doctorInforService.updateDoctorInfor(id, doctorData);
+
         return res.status(200).json(data);
     } catch (e) {
         console.log(e);

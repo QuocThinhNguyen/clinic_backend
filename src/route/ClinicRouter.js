@@ -5,7 +5,7 @@ import upload from "../utils/fileUpload.js";
 const router = express.Router();
 
 router.post('/', upload.single("image"), clinicController.createClinic)
-router.put('/:id', clinicController.updateClinic)
+router.put('/:id', upload.single("image"), clinicController.updateClinic)
 router.get('/', clinicController.getAllClinic)
 router.get('/:id', clinicController.getDetailClinic)
 router.delete('/:id', clinicController.deleteClinic)

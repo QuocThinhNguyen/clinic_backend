@@ -21,7 +21,12 @@ const createSpecialty = async (req, res) => {
 const updateSpecialty = async (req, res) => {
     try {
         const id = req.params.id;
-        const info = await specialtyService.updateSpecialty(id, req.body);
+        const image = req.file ? `${req.file.filename}` : null;
+        const specialtyData = {
+            ...req.body,
+            image
+        }
+        const info = await specialtyService.updateSpecialty(id, specialtyData);
         return res.status(200).json(info);
     } catch (err) {
         console.log(err)

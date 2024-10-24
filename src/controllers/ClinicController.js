@@ -22,7 +22,12 @@ const createClinic = async (req, res) => {
 const updateClinic = async (req, res) => {
     try {
         const id = req.params.id;
-        const info = await clinicService.updateClinic(id, req.body);
+        const image = req.file ? `${req.file.filename}` : null;
+        const clinicData = {
+            ...req.body,
+            image
+        }
+        const info = await clinicService.updateClinic(id, clinicData);
         return res.status(200).json(info);
     } catch (err) {
         console.log(err)

@@ -1,6 +1,105 @@
 import Booking from "../models/booking.js";
 import Users from "../models/users.js";
 import PatientRecords from "../models/patient_records.js";
+import Clinic from "../models/clinic.js";
+import Specialty from "../models/specialty.js";
+import DoctorInfo from "../models/doctor_info.js";
+
+const getAllBookingByUserId = (userId, startDate, endDate) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const patientRecords = await PatientRecords.find({ patientId: userId });
+      if (patientRecords.length === 0) {
+        return {
+          status: "NOT_FOUND",
+          message: "No patient records found for this user",
+        };
+      }
+
+      const bookings = await Booking.find({
+        patientRecordId: {
+          $in: patientRecords.map((record) => record.patientRecordId),
+        },
+      })
+        .populate({
+          path: "patientRecordId",
+          model: "PatientRecords",
+          localField: "patientRecordId",
+          foreignField: "patientRecordId",
+          select:
+            "fullname gender birthDate phoneNumber CCCD email job address ",
+        })
+        .populate({
+          path: "doctorId",
+          model: "Users",
+          localField: "doctorId",
+          foreignField: "userId",
+          select: "fullname",
+        });
+
+      console.log("bookings:", bookings);
+
+      if (bookings.length === 0) {
+        return {
+          status: "NOT_FOUND",
+          message: "No bookings found for this user",
+        };
+      }
+
+      const detailedBookings = await Promise.all(
+        bookings.map(async (booking) => {
+          const doctorInfo = await DoctorInfo.findOne({
+            doctorId: booking.doctorId.userId,
+          })
+            .populate("specialtyId", "name description")
+            .populate({
+              path: "specialtyId",
+              model: "Specialty",
+              localField: "specialtyId",
+              foreignField: "specialtyId",
+              select: "name",
+            })
+            .populate({
+              path: "clinicId",
+              model: "Clinic",
+              localField: "clinicId",
+              foreignField: "clinicId",
+              select: "name address",
+            });
+
+          return {
+            ...booking._doc,
+            doctorInfo: {
+              specialty: doctorInfo?.specialtyId || null,
+              clinic: doctorInfo?.clinicId || null,
+            },
+          };
+        })
+      );
+
+      let result = [];
+      if (startDate && endDate) {
+        result = detailedBookings.filter((booking) => {
+          const appointmentDate = new Date(booking.appointmentDate);
+          if (appointmentDate >= sDate && appointmentDate <= eDate)
+            return booking;
+          else return null;
+        });
+      } else {
+        result = detailedBookings;
+      }
+
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: result,
+      });
+    } catch (e) {
+      console.error(e);
+      reject(e.message);
+    }
+  });
+};
 
 const getAllBooking = (query, page, limit) => {
   return new Promise(async (resolve, reject) => {
@@ -161,6 +260,7 @@ const updateBooking = (id, data) => {
 };
 
 export default {
+  getAllBookingByUserId,
   getAllBooking,
   getBooking,
   createBooking,

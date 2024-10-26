@@ -6,6 +6,31 @@ import crypto from 'crypto';
 import vnpayConfig from '../config/vnpayConfig.js';
 import { log } from "console";
 
+
+const getAllBookingByUserId = async (req, res) => {
+  try {
+    const startDate = req.query.startDate;
+    const endDate = req.query.endDate;
+    const userId = req.body.userId;
+  if (!userId) {
+    return res.status(200).json({
+      status: "ERR",
+      message: "The user is required",
+    });
+  }
+  const response = await bookingService.getAllBookingByUserId(userId, startDate, endDate);
+  return res.status(200).json(response);
+  } catch (error) {
+    return res.status(404).json({
+      status: "ERR",
+      message: error.message,
+    });
+    
+  }
+  
+
+}
+
 const getAllBooking = async (req, res) => {
   try {
     const { search, date, status, page = 1, limit = 10 } = req.query;
@@ -166,6 +191,7 @@ const handlePaymentReturn = async (req, res) => {
 };
 
 export default {
+  getAllBookingByUserId,
   getAllBooking,
   getBooking,
   createBooking,

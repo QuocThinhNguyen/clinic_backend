@@ -34,7 +34,7 @@ export const generalOTPToken = async (email) => {
     const otp_token = jwt.sign({
         email: email,
         otp: Math.floor(100000 + Math.random() * 900000).toString()
-    }, process.env.SECRET_KEY, { expiresIn: '15m' })
+    }, process.env.SECRET_KEY, { expiresIn: '60s' })
 
     return otp_token
 }
@@ -72,7 +72,7 @@ export const createAndSendOTPService = async (newUser, otp_token) => {
             const hashedPassword = bcrypt.hashSync(password, 10)
             const hashedOTP = bcrypt.hashSync(otpFromToken, 10)
             const verifyLink = `${process.env.WEB_LINK}/user/verify-account/${otp_token}`;
-            const text = `Your OTP for email verification is: ${otpFromToken}. It is valid for 60 seconds. Please use this link to verify your account: ${verifyLink}`
+            const text = `Your OTP for email verification is: ${otpFromToken}. It is valid for 60 seconds.`
             const subject = 'Verify account'
             if (checkUser !== null) {
                 if (checkUser.isVerified) {
@@ -92,6 +92,7 @@ export const createAndSendOTPService = async (newUser, otp_token) => {
                     resolve({
                         status: 'OK',
                         message: text,
+                        data: verifyLink
                     })
                 }
             }
@@ -106,6 +107,7 @@ export const createAndSendOTPService = async (newUser, otp_token) => {
             resolve({
                 status: 'OK',
                 message: text,
+                data: verifyLink
             })
         } catch (e) {
             reject(e)

@@ -1,6 +1,9 @@
 import Booking from "../models/booking.js";
 import Users from "../models/users.js";
 import PatientRecords from "../models/patient_records.js";
+
+import Schedules from "../models/schedule.js";
+
 import Clinic from "../models/clinic.js";
 import Specialty from "../models/specialty.js";
 import DoctorInfo from "../models/doctor_info.js";
@@ -100,6 +103,7 @@ const getAllBookingByUserId = (userId, startDate, endDate) => {
     }
   });
 };
+
 
 const getAllBooking = (query, page, limit) => {
   return new Promise(async (resolve, reject) => {
@@ -297,11 +301,112 @@ const getBookingByDoctorId = (doctorId) => {
   });
 }
 
+const patientBooking = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.doctorId || !data.patientRecordId || !data.appointmentDate || !data.timeType) {
+        resolve({
+          status: "ERR",
+          message: "Data is not enough",
+        });
+      } else {
+        const existingBooking = await Booking.findOne({
+          doctorId: data.doctorId,
+          patientRecordId: data.patientRecordId,
+          appointmentDate: data.appointmentDate,
+          timeType: data.timeType
+        })
+        console.log(existingBooking);
+
+        if (existingBooking) {
+          resolve({
+            status: "ERR",
+            message: "This booking has already existed",
+          });
+        } else {
+          const schedule = await Schedules.findOne({
+            doctorId: data.doctorId,
+            scheduleDate: data.appointmentDate,
+            timeType: data.timeType
+          });
+
+          console.log(schedule);
+          if (schedule) {
+            if (schedule.currentNumber < schedule.maxNumber) {
+              schedule.currentNumber += 1;
+              await schedule.save();
+
+              const newBooking = await Booking.create({
+                doctorId: data.doctorId,
+                patientRecordId: data.patientRecordId,
+                appointmentDate: data.appointmentDate,
+                timeType: data.timeType,
+                price: data.price,
+                reason: data.reason,
+                status: "S1"
+              })
+              await newBooking.save();
+
+              resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: newBooking,
+              });
+            } else {
+              resolve({
+                status: "ERR",
+                message: "This schedule is full",
+              });
+            }
+          } else {
+            resolve({
+              status: "ERR",
+              message: "This schedule is not existed",
+            });
+          }
+        }
+
+
+      }
+    } catch (e) {
+      reject(e)
+    }
+  })
+}
+
+const updateBookingStatus = (bookingId, status) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const booking = await Booking.findOne({
+        bookingId: bookingId
+      });
+      if (!booking) {
+        resolve({
+          status: "ERR",
+          message: "The booking is not defined",
+        });
+      } else {
+        booking.status = status;
+        await booking.save();
+        resolve({
+          status: "OK",
+          message: "SUCCESS",
+          data: booking,
+        });
+      }
+    } catch (e) {
+      reject(e)
+    }
+  })
+}
+
 export default {
   getAllBookingByUserId,
   getAllBooking,
   getBooking,
   createBooking,
   updateBooking,
-  getBookingByDoctorId
+  getBookingByDoctorId,
+  patientBooking,
+  updateBookingStatus
 };

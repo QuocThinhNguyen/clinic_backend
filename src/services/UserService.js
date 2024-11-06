@@ -125,7 +125,7 @@ export const resetUserPasswordService = (email) => {
       // Create reset password token
       const token = await generalResetPasswordToken(email);
       // Create reset password link
-      const resetLink = `${process.env.WEB_LINK}/user/reset-password/${token}`;
+      const resetLink = `${process.env.WEB_LINK}/reset-password/${token}`;
       // Create text
       const text = `Click the link to reset your password: ${resetLink}`;
       const subject = "Reset password";

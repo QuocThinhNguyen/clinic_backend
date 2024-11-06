@@ -1,4 +1,4 @@
-import homePageRouter from "./web.js"
+import homePageRouter from "./WebRouter.js"
 import userRouter from "./UserRouter.js"
 import clinicRouter from "./ClinicRouter.js"
 
@@ -14,12 +14,12 @@ const routes = (app) => {
     app.use('/', homePageRouter)
     app.use('/user', userRouter)
     app.use('/clinic', clinicRouter)
-    app.use('/booking',bookingRouter)  
-    app.use('/patientrecord',patientRecordsRouter) 
-    app.use('/schedule',scheduleRouter)
+    app.use('/booking', bookingRouter)
+    app.use('/patientrecord', patientRecordsRouter)
+    app.use('/schedule', scheduleRouter)
     app.use('/specialty', specialtyRouter)
     app.use('/doctor', doctorInforRouter)
-    app.use('/admin',adminRouter)
+    app.use('/admin', adminRouter)
 }
 
 export default routes

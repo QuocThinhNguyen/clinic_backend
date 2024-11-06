@@ -6,12 +6,14 @@ import connectDB from "./config/connectDB.js";
 import upload from "./utils/fileUpload.js";
 import dotenv from "dotenv";
 import multer from "multer";
+import cors from "cors";
 dotenv.config();
 
 let app = express();
 
 
 // config app
+app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

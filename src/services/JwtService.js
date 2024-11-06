@@ -71,7 +71,7 @@ export const createAndSendOTPService = async (newUser, otp_token) => {
             const otpFromToken = decoded.otp; // Extract OTP from the token
             const hashedPassword = bcrypt.hashSync(password, 10)
             const hashedOTP = bcrypt.hashSync(otpFromToken, 10)
-            const verifyLink = `${process.env.WEB_LINK}/user/verify-account/${otp_token}`;
+            const verifyLink = `${process.env.WEB_LINK}/verify-account/${otp_token}`;
             const text = `Your OTP for email verification is: ${otpFromToken}. It is valid for 60 seconds.`
             const subject = 'Verify account'
             if (checkUser !== null) {

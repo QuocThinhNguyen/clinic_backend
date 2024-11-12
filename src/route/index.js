@@ -21,12 +21,8 @@ const routes = (app) => {
     app.use('/schedule',scheduleRouter)
     app.use('/specialty', specialtyRouter)
     app.use('/doctor', doctorInforRouter)
-<<<<<<< Updated upstream:src/route/index.js
     app.use('/admin',adminRouter)
-=======
-    app.use('/admin', adminRouter)
     app.use('/allcode', allCodeRouter)
->>>>>>> Stashed changes:src/routes/index.js
 }
 
 export default routes

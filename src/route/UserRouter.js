@@ -31,13 +31,10 @@ router.get("/reset-password/:token", handleResetPasswordTokenController);
 router.post("/refresh_token", refreshToken);
 
 //CRUD user
-<<<<<<< Updated upstream:src/route/UserRouter.js
-router.get("/search", getUserByNameOrEmailController); //Tìm kiếm user theo tên, email
-router.get("/", authMiddleware, getAllUserController); //Lấy tất cả user
-=======
+
+
 router.get("/", authAdminMiddleware, getUserByNameOrEmailController); //Tìm kiếm user theo tên, email
 router.get("/", authAdminMiddleware, getAllUserController); //Lấy tất cả user
->>>>>>> Stashed changes:src/routes/UserRouter.js
 router.get("/:id", authMiddleware, getDetailsUserController); //Lấy thông tin một user
 router.post("/", authMiddleware, upload.single("image"), createUserController); //Thêm user
 router.put(

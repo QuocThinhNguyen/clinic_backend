@@ -11,9 +11,13 @@ dotenv.config();
 
 let app = express();
 
+const corsOptions = {
+  origin: `http://localhost:${process.env.FE_PORT}`, 
+  credentials: true,
+};
 
 // config app
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

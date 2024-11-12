@@ -32,10 +32,12 @@ const updateDoctorInfor = async (req, res) => {
         const id = req.params.id;
         const image = req.file ? `${req.file.filename}` : null;
         const doctorData = {
-            ...req.body,
-            image
+            ...req.body
         }
 
+        if (image) {
+            doctorData.image = image;
+        }
         const data = await doctorInforService.updateDoctorInfor(id, doctorData);
 
         return res.status(200).json(data);

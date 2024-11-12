@@ -2,11 +2,13 @@ import doctorInfor from '../models/doctor_info.js';
 import users from '../models/users.js';
 import specialties from '../models/specialty.js';
 import clinics from '../models/clinic.js';
+import allcodes from '../models/allcodes.js';
 
 const getDoctorInfor = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             // Tìm tài liệu doctor_info dựa trên doctorId
+            
             const doctorData = await doctorInfor.findOne({ doctorId: id });
             if (!doctorData) {
                 resolve({
@@ -19,6 +21,7 @@ const getDoctorInfor = (id) => {
             const userData = await users.findOne({ userId: doctorData.doctorId });
             const specialtyData = await specialties.findOne({ specialtyId: doctorData.specialtyId });
             const clinicData = await clinics.findOne({ clinicId: doctorData.clinicId });
+            const allCodeData = await allcodes.findOne({ keyMap: doctorData.position });
 
             const combinedData = {
                 doctorId: doctorData.doctorId,
@@ -33,7 +36,8 @@ const getDoctorInfor = (id) => {
                 clinicName: clinicData.name,
                 price: doctorData.price,
                 note: doctorData.note,
-                description: doctorData.description
+                description: doctorData.description,
+                position : allCodeData.valueVi
             };
 
             resolve({

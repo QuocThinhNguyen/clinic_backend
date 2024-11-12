@@ -114,12 +114,16 @@ const updateBooking = async (req, res) => {
 
 const getBookingByDoctorId = async (req, res) => {
   try {
-    const id = req.params.doctorId;
-    const response = await bookingService.getBookingByDoctorId(id);
-    return res.status(200).json(response);
+    const { doctorId } = req.params;
+    const { date } = req.query; // Lấy tham số ngày từ query string
+
+    const result = await bookingService.getBookingByDoctorId(doctorId, date);
+    return res.status(200).json(result);
   } catch (e) {
-    return res.status(404).json({
-      message: e.message,
+    console.log(e);
+    return res.status(500).json({
+      status: "ERR",
+      message: "Error from server",
     });
   }
 }
@@ -142,7 +146,7 @@ const patientBooking = async (req, res) => {
     const data = req.body;
     const result = await bookingService.patientBooking(data);
     if (result.status === "OK") {
-      console.log("IDDDD:", result.data.bookingId, typeof result.data.bookingId.toString());
+      // console.log("IDDDD:", result.data.bookingId, typeof result.data.bookingId.toString());
 
       const paymentUrl = await paymentService.createPaymentUrl(result.data.bookingId.toString(), result.data.price, 'Payment for booking');
       return res.status(200).json({

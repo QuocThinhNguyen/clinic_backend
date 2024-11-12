@@ -25,8 +25,12 @@ const updateClinic = async (req, res) => {
         const image = req.file ? `${req.file.filename}` : null;
         const clinicData = {
             ...req.body,
-            image
         }
+
+        if (image) {
+            clinicData.image = image;
+        }
+
         const info = await clinicService.updateClinic(id, clinicData);
         return res.status(200).json(info);
     } catch (err) {

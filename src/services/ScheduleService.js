@@ -132,6 +132,7 @@ const createSchedule = (doctorId, scheduleDate, timeTypes) => {
       const checkSchedule = await Schedule.find({
         doctorId,
         scheduleDate,
+        timeType: { $in: timeTypes },
       });
       if (checkSchedule.length > 0) {
         return reject(new Error("Schedule already exists"));

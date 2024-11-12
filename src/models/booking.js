@@ -25,6 +25,7 @@ const bookingSchema = new Schema({
   },
   timeType: {
     type: String,
+    ref: "AllCodes",
     required: true,
   },
   price: {

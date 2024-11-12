@@ -31,9 +31,9 @@ export const createUserController = async (req, res) => {
     const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
     const isCheckEmail = reg.test(email);
     console.log("req.body", req.body);
-    
+
     console.log("req.file", req.file);
-    
+
     if (
       !email ||
       !password ||
@@ -55,13 +55,13 @@ export const createUserController = async (req, res) => {
       });
     }
 
-     // Lấy đường dẫn ảnh từ `req.file`
-     const image = req.file ? `${req.file.filename}` : null; // Đường dẫn ảnh
+    // Lấy đường dẫn ảnh từ `req.file`
+    const image = req.file ? `${req.file.filename}` : null; // Đường dẫn ảnh
 
-     const userData = {
+    const userData = {
       ...req.body,
       image,
-     }
+    }
 
     const response = await createUserService(userData);
     return res.status(200).json(response);
@@ -180,10 +180,13 @@ export const updateUserController = async (req, res) => {
     const image = req.file ? `${req.file.filename}` : null; // Đường dẫn ảnh
     const data = {
       ...req.body,
-      image,
     }
+
+    if (image) {
+      data.image = image;
+  }
     console.log("req.body", req.body);
-    
+
     console.log("req.file", req.file);
     if (!userId) {
       return res.status(200).json({
@@ -221,7 +224,11 @@ export const deleteUserController = async (req, res) => {
 export const getAllUserController = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    let limit = parseInt(req.query.limit) || 10;
+    if (limit > 20)
+      limit = 20;
+    console.log(limit);
+
 
     const skip = (page - 1) * limit;
 

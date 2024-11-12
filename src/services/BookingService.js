@@ -263,12 +263,26 @@ const updateBooking = (id, data) => {
   });
 };
 
-const getBookingByDoctorId = (doctorId) => {
+const getBookingByDoctorId = (doctorId,date) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const data = await Booking.find({
+      const query = {
         doctorId: doctorId
-      })
+      };
+
+      if (date) {
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        query.appointmentDate = {
+          $gte: startOfDay,
+          $lte: endOfDay
+        };
+      }
+      const data = await Booking.find(query)
         .populate({
           path: "doctorId",
           model: "Users",
@@ -282,6 +296,20 @@ const getBookingByDoctorId = (doctorId) => {
           localField: "patientRecordId",
           foreignField: "patientRecordId",
           select: "fullname gender birthDate phoneNumber CCCD email job address"
+        })
+        .populate({
+          path:"status",
+          model:"AllCodes",
+          localField:"status",
+          foreignField:"keyMap",
+          select:"valueEn valueVi"
+        })
+        .populate({
+          path:"timeType",
+          model:"AllCodes",
+          localField:"timeType",
+          foreignField:"keyMap",
+          select:"valueEn valueVi"
         })
       if (data.length === 0) {
         resolve({
@@ -343,7 +371,7 @@ const patientBooking = (data) => {
                 timeType: data.timeType,
                 price: data.price,
                 reason: data.reason,
-                status: "S1"
+                status: "S2"
               })
               await newBooking.save();
 

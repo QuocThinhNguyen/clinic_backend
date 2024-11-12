@@ -9,6 +9,8 @@ import bookingRouter from "./BookingRouter.js"
 import patientRecordsRouter from "./PatientRecordsRouter.js"
 import scheduleRouter from "./ScheduleRouter.js"
 import adminRouter from "./AdminRouter.js"
+import allCodeRouter from "./AllCodeRouter.js"
+
 
 const routes = (app) => {
     app.use('/', homePageRouter)
@@ -19,7 +21,12 @@ const routes = (app) => {
     app.use('/schedule',scheduleRouter)
     app.use('/specialty', specialtyRouter)
     app.use('/doctor', doctorInforRouter)
+<<<<<<< Updated upstream:src/route/index.js
     app.use('/admin',adminRouter)
+=======
+    app.use('/admin', adminRouter)
+    app.use('/allcode', allCodeRouter)
+>>>>>>> Stashed changes:src/routes/index.js
 }
 
 export default routes

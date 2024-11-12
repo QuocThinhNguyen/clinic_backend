@@ -1,5 +1,10 @@
 import { query } from "express";
 import bookingService from "../services/BookingService.js";
+import paymentService from '../services/PaymentService.js';
+import querystring from 'qs';
+import crypto from 'crypto';
+import vnpayConfig from '../config/vnpayConfig.js';
+import { log } from "console";
 
 
 const getAllBookingByUserId = async (req, res) => {
@@ -118,11 +123,80 @@ const getBookingByDoctorId = async (req, res) => {
     });
   }
 }
+
+// const patientBooking = async (req, res) => {
+//   try {
+//     const data = req.body;
+//     console.log(data);
+//     const result = await bookingService.patientBooking(data);
+//     return res.status(200).json(result);
+//   } catch (e) {
+//     return res.status(404).json({
+//       message: e.message,
+//     });
+//   }
+// }
+
+const patientBooking = async (req, res) => {
+  try {
+    const data = req.body;
+    const result = await bookingService.patientBooking(data);
+    if (result.status === "OK") {
+      console.log("IDDDD:", result.data.bookingId, typeof result.data.bookingId.toString());
+
+      const paymentUrl = await paymentService.createPaymentUrl(result.data.bookingId.toString(), result.data.price, 'Payment for booking');
+      return res.status(200).json({
+        status: "OK",
+        message: "Booking created successfully",
+        paymentUrl: paymentUrl
+      });
+    } else {
+      return res.status(400).json(result);
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      status: "ERR",
+      message: "Error from server",
+    });
+  }
+};
+
+const handlePaymentReturn = async (req, res) => {
+  try {
+    const { orderId, resultCode } = req.query;
+    console.log(req.query);
+    const bookingId = orderId.split('_')[0]; // Sử dụng orderId làm bookingId
+    const paymentStatus = resultCode === '0' ? 'success' : 'failed';
+
+    if (paymentStatus === 'success') {
+      await bookingService.updateBookingStatus(bookingId, 'S2');
+      return res.status(200).json({
+        status: "OK",
+        message: "Payment successful",
+      });
+    } else {
+      return res.status(400).json({
+        status: "ERR",
+        message: "Payment failed",
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      status: "ERR",
+      message: "Error from server",
+    });
+  }
+};
+
 export default {
   getAllBookingByUserId,
   getAllBooking,
   getBooking,
   createBooking,
   updateBooking,
-  getBookingByDoctorId
+  getBookingByDoctorId,
+  patientBooking,
+  handlePaymentReturn
 };

@@ -1,9 +1,9 @@
 import express from "express";
 import adminController from "../controllers/AdminController.js"
-import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { authAdminMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.get('/homepage', authMiddleware, adminController.adminHomePage)
+router.get('/homepage', authAdminMiddleware, adminController.adminHomePage)
 
 export default router

@@ -13,6 +13,7 @@ import {
   verifyUserController,
   createAndSendOTPController,
   getUserByNameOrEmailController,
+  updatePasswordController
 } from "../controllers/UserController.js";
 import {
   authAdminMiddleware,
@@ -35,5 +36,6 @@ router.put(
   updateUserController
 ); //Cập nhật user
 router.delete("/:id", authAdminMiddleware, deleteUserController); //Xóa user
+router.post("/update-password", authUserMiddleware, updatePasswordController); // Định nghĩa tuyến đường để cập nhật mật khẩu
 
 export default router;

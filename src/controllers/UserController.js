@@ -14,6 +14,7 @@ import {
   getDetailsUserService,
   getUserByNameOrEmailService,
   resetUserPasswordService,
+  updatePassword
 } from "../services/UserService.js";
 
 export const createUserController = async (req, res) => {
@@ -301,6 +302,21 @@ export const getUserByNameOrEmailController = async (req, res) => {
     console.log("Error:", e);
     return res.status(404).json({
       message: e.message,
+    });
+  }
+};
+
+export const updatePasswordController = async (req, res) => {
+  try {
+    const { userId, oldPassword, newPassword, confirmPassword } = req.body;
+
+    const result = await updatePassword(userId, oldPassword, newPassword, confirmPassword);
+    return res.status(200).json(result);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      status: "ERR",
+      message: "Error from server",
     });
   }
 };

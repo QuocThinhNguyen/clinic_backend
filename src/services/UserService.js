@@ -292,7 +292,7 @@ export const updatePassword = async (userId, oldPassword, newPassword, confirmPa
       if (!isMatch) {
         return resolve({
           status: "ERR",
-          message: "Old password is incorrect",
+          message: "Mật khẩu cũ không đúng",
         });
       }
 

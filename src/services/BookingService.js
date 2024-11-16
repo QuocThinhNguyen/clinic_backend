@@ -38,7 +38,21 @@ const getAllBookingByUserId = (userId, startDate, endDate) => {
           localField: "doctorId",
           foreignField: "userId",
           select: "fullname",
-        });
+        })
+        .populate({
+          path: "status",
+          model: "AllCodes",
+          localField: "status",
+          foreignField: "keyMap",
+          select: "valueEn valueVi",
+        })
+        .populate({
+          path: "timeType",
+          model: "AllCodes",
+          localField: "timeType",
+          foreignField: "keyMap",
+          select: "valueEn valueVi",
+        })
 
       console.log("bookings:", bookings);
 

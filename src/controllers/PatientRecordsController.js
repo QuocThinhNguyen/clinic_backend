@@ -62,11 +62,22 @@ const deletePatientRecord = async (req, res) => {
     })
   }
 }
+const getPatientRecordsByPatientId = async (req, res) => {
+  try {
+    const data = await patientRecordsService.getPatientRecordsByPatientId(req.params.patientId);
+    return res.status(200).json(data);
+  } catch (e) {
+    return res.status(404).json({
+      message: e.message,
+    });
+  }
+};
 
 export default {
   getAllPatientRecords,
   getPatientRecordsById,
   createPatientRecord,
   updatePatientRecord,
-  deletePatientRecord
+  deletePatientRecord,
+  getPatientRecordsByPatientId
 }

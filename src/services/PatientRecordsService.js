@@ -129,10 +129,36 @@ const deletePatientRecord = (id) => {
   })
 }
 
+const getPatientRecordsByPatientId = async (patientId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const patientRecord = await PatientRecords.find({ patientId: patientId });
+      if (!patientRecord) {
+        resolve({
+          status: "ERR",
+          message: "Patient record not found",
+        });
+      } else {
+        resolve({
+          status: "OK",
+          data: patientRecord,
+        });
+      }
+    } catch (e) {
+      reject({
+        status: "ERR",
+        message: "Error from server",
+        error: e.message,
+      });
+    }
+  });
+};
+
 export default {
   getAllPatientRecords,
   getPatientRecordsById,
   createPatientRecord,
   updatePatientRecord,
-  deletePatientRecord
+  deletePatientRecord,
+  getPatientRecordsByPatientId
 };

@@ -34,6 +34,7 @@ const getDoctorInfor = (id) => {
                 image: userData.image,
                 specialtyName: specialtyData.name,
                 clinicName: clinicData.name,
+                addressClinic: clinicData.address,
                 price: doctorData.price,
                 note: doctorData.note,
                 description: doctorData.description,
@@ -74,7 +75,7 @@ const getAllDoctor = () => {
                     model: 'Clinic',
                     localField: 'clinicId',
                     foreignField: 'clinicId',
-                    select: 'name'
+                    select: 'name address'
                 })
             // .populate({
             //     path: 'position',

@@ -1,4 +1,5 @@
 import User from "../models/users.js";
+import DoctorInfor from "../models/doctor_info.js"
 import bcrypt from "bcrypt";
 import {
   generalAccessToken,
@@ -46,6 +47,11 @@ export const createUserService = (newUser) => {
         roleId,
       });
       if (createdUser) {
+        if (createdUser.roleId === "R2") {
+          await DoctorInfor.create({
+            doctorId: createdUser.userId
+          })
+        }
         resolve({
           status: "OK",
           message: "SUCCESS",
@@ -215,14 +221,27 @@ export const deleteUserService = (id) => {
   });
 };
 
-export const getAllUserService = (skip, limit) => {
+export const getAllUserService = (query, skip, limit) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const allUsers = await User.find({}).skip(skip).limit(limit);
+      let formatQuery = {}
+      // Sử dụng biểu thức chính quy để tìm kiếm không chính xác
+      if (query.query) {
+        formatQuery = {
+          $or: [
+            { fullname: { $regex: query.query, $options: 'i' } }, // Tìm trong trường 'name'
+            { address: { $regex: query.query, $options: 'i' } }, // Tìm trong trường 'address'
+          ],
+        };
+      }
+      const allUsers = await User.find(formatQuery).skip(skip).limit(limit);
+      const totalUsers = await User.countDocuments()
+      const totalPages = Math.ceil(totalUsers / limit);
       resolve({
         status: "OK",
         message: "SUCCESS",
         data: allUsers,
+        totalPages
       });
     } catch (e) {
       reject(e);
@@ -325,3 +344,19 @@ export const updatePassword = async (userId, oldPassword, newPassword, confirmPa
     }
   });
 };
+
+export const getDropdownUsersService = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const dropdowUsers = await User.find()
+
+      resolve({
+        errCode: 0,
+        message: "Get dropdown user successfully",
+        data: dropdowUsers
+      })
+    } catch (e) {
+      reject(e)
+    }
+  })
+}

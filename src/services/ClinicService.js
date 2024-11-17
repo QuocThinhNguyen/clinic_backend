@@ -126,20 +126,34 @@ const deleteClinic = (id) => {
     })
 }
 
-const filterClinics = (data) => {
+const filterClinics = (query) => {
     return new Promise(async (resolve, reject) => {
         try {
+            const page = parseInt(query.page) || 1;
+            const limit = parseInt(query.limit) || 6;
+            let formatQuery = {}
             // Sử dụng biểu thức chính quy để tìm kiếm không chính xác
-            const query = {};
-            if (data.name) {
-                query.name = { $regex: data.name, $options: 'i' }; // 'i' để không phân biệt chữ hoa chữ thường
+            if (query.query) {
+                formatQuery = {
+                    $or: [
+                        { name: { $regex: query.query, $options: 'i' } }, // Tìm trong trường 'name'
+                        { address: { $regex: query.query, $options: 'i' } }, // Tìm trong trường 'address'
+                    ],
+                };
             }
-            if (data.address) {
-                query.address = { $regex: data.address, $options: 'i' };
-            }
+            // if (data.name) {
+            //     query.name = { $regex: data.name, $options: 'i' }; // 'i' để không phân biệt chữ hoa chữ thường
+            // }
+            // if (data.address) {
+            //     query.address = { $regex: data.address, $options: 'i' };
+            // }
             // Thêm các điều kiện tìm kiếm khác nếu cần
 
-            const clinics = await clinic.find(query);
+            const clinics = await clinic.find(formatQuery)
+                .skip((page - 1) * limit)
+                .limit(limit);
+            const totalClinics = await clinic.countDocuments()
+            const totalPages = Math.ceil(totalClinics / limit);
             if (clinics.length === 0) {
                 resolve({
                     errCode: 1,
@@ -149,7 +163,8 @@ const filterClinics = (data) => {
                 resolve({
                     errCode: 0,
                     message: "Filter clinic successfully",
-                    data: clinics
+                    data: clinics,
+                    totalPages
                 });
             }
         } catch (e) {
@@ -158,11 +173,28 @@ const filterClinics = (data) => {
     });
 };
 
+const getDropdownClinics = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const dropdownClinics = await clinic.find()
+
+            resolve({
+                errCode: 0,
+                message: "Get dropdown clinic successfully",
+                data: dropdownClinics
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 export default {
     createClinic,
     updateClinic,
     getAllClinic,
     getDetailClinic,
     deleteClinic,
-    filterClinics
+    filterClinics,
+    getDropdownClinics
 }

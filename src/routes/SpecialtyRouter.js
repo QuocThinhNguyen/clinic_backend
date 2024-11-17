@@ -6,6 +6,7 @@ import { authUserMiddleware, authAdminMiddleware, authDoctorMiddleware, authMidd
 
 const router = express.Router();
 
+router.get('/dropdown', specialtyController.getDropdownSpecialty)
 router.post('/', authAdminMiddleware, upload.single("image"), specialtyController.createSpecialty)
 router.put('/:id', authAdminMiddleware, upload.single("image"), specialtyController.updateSpecialty)
 router.get('/', specialtyController.getAllSpecialty)

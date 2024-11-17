@@ -14,7 +14,8 @@ import {
   getDetailsUserService,
   getUserByNameOrEmailService,
   resetUserPasswordService,
-  updatePassword
+  updatePassword,
+  getDropdownUsersService
 } from "../services/UserService.js";
 
 export const createUserController = async (req, res) => {
@@ -225,23 +226,15 @@ export const deleteUserController = async (req, res) => {
 export const getAllUserController = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.limit) || 10;
+    let limit = parseInt(req.query.limit) || 6;
     if (limit > 20)
       limit = 20;
-    console.log(limit);
-
 
     const skip = (page - 1) * limit;
 
-    const response = await getAllUserService(skip, limit);
+    const response = await getAllUserService(req.query, skip, limit);
 
-    return res.status(200).json({
-      status: "OK",
-      message: "SUCCESS",
-      data: response,
-      currentPage: page,
-      limit: limit,
-    });
+    return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({
       message: e,
@@ -320,3 +313,16 @@ export const updatePasswordController = async (req, res) => {
     });
   }
 };
+
+export const getDropdownUsersController = async (req, res) => {
+  try {
+      const data = await getDropdownUsersService();
+      return res.status(200).json(data)
+  } catch (err) {
+      console.log(err)
+      return res.status(200).json({
+          errCode: -1,
+          errMessage: "Error from server"
+      })
+  }
+}

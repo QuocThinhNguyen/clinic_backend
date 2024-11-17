@@ -8,8 +8,8 @@ const getDoctorInfor = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             // Tìm tài liệu doctor_info dựa trên doctorId
-            
-            const doctorData = await doctorInfor.findOne({ doctorId: id });
+
+            const doctorData = await doctorInfor.findOne({ doctorInforId: id });
             if (!doctorData) {
                 resolve({
                     errCode: 1,
@@ -24,6 +24,7 @@ const getDoctorInfor = (id) => {
             const allCodeData = await allcodes.findOne({ keyMap: doctorData.position });
 
             const combinedData = {
+                doctorInforId: doctorData.doctorInforId,
                 doctorId: doctorData.doctorId,
                 email: userData.email,
                 fullname: userData.fullname,
@@ -38,13 +39,13 @@ const getDoctorInfor = (id) => {
                 price: doctorData.price,
                 note: doctorData.note,
                 description: doctorData.description,
-                position : allCodeData.valueVi
+                position: allCodeData.valueVi
             };
 
             resolve({
                 errCode: 0,
                 errMessage: "Success",
-                data: combinedData
+                data: combinedData,
             });
         } catch (e) {
             reject(e);
@@ -52,10 +53,65 @@ const getDoctorInfor = (id) => {
     });
 };
 
-const getAllDoctor = () => {
+const getAllDoctor = (query) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allDoctor = await doctorInfor.find({})
+            const page = parseInt(query.page) || 1;
+            const limit = parseInt(query.limit) || 6;
+            let formatQuery = {}
+            // Sử dụng biểu thức chính quy để tìm kiếm không chính xác
+            if (query.query) {
+                formatQuery = {
+                    $or: [
+                        { 'doctorId.fullname': { $regex: query.query, $options: 'i' } },
+                        { 'clinicId.name': { $regex: query.query, $options: 'i' } },
+                        { 'specialtyId.name': { $regex: query.query, $options: 'i' } }
+                    ]
+                };
+            }
+            // const allDoctor = await doctorInfor.aggregate([
+            //     {
+            //         $lookup: {
+            //             from: 'users', // Tên bộ sưu tập của người dùng
+            //             localField: 'doctorId', // Trường doctor có doctorId
+            //             foreignField: 'userId', // Trường userId của user
+            //             as: 'user'
+            //         }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: 'clinics', // Tên bộ sưu tập của phòng khám
+            //             localField: 'clinicId', // Trường doctor có clinicId
+            //             foreignField: 'clinicId', // Trường clinicId của clinic
+            //             as: 'clinic'
+            //         }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: 'specialties', // Tên bộ sưu tập của chuyên khoa
+            //             localField: 'specialtyId', // Trường doctor có specialtyId
+            //             foreignField: 'specialtyId', // Trường specialtyId của specialty
+            //             as: 'specialty'
+            //         }
+            //     },
+            //     {
+            //         $match: formatQuery // Áp dụng bộ lọc từ formatQuery
+            //     },
+            //     {
+            //         $project: {
+            //             'user.fullname': 1,
+            //             'user.address': 1,
+            //             'user.image': 1,
+            //             'user.phoneNumber': 1,
+            //             'clinic.name': 1,
+            //             'specialty.name': 1,
+            //             position: 1,
+            //             clinicId: 1,
+            //             specialtyId: 1,
+            //         }
+            //     }
+            // ])
+            const allDoctor = await doctorInfor.find(formatQuery)
                 .populate({
                     path: 'doctorId',
                     model: 'Users',
@@ -77,18 +133,23 @@ const getAllDoctor = () => {
                     foreignField: 'clinicId',
                     select: 'name address'
                 })
-            // .populate({
-            //     path: 'position',
-            //     model: 'Allcodes',
-            //     localField: 'position',
-            //     foreignField: 'keyMap',
-            //     select: 'value'
-            // })
+                //.populate({
+                //     path: 'position',
+                //     model: 'Allcodes',
+                //     localField: 'position',
+                //     foreignField: 'keyMap',
+                //     select: 'valueVi'
+                // })
+                .skip((page - 1) * limit)
+                .limit(limit)
+            const totalDoctors = await doctorInfor.countDocuments()
+            const totalPages = Math.ceil(totalDoctors / limit);
 
             resolve({
                 errCode: 0,
                 errMessage: "Success",
-                data: allDoctor
+                data: allDoctor,
+                totalPages
             })
         } catch (e) {
             reject(e);
@@ -99,8 +160,7 @@ const getAllDoctor = () => {
 const updateDoctorInfor = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-
-            const doctorData = await doctorInfor.findOne({ doctorId: id });
+            const doctorData = await doctorInfor.findOne({ doctorInforId: id });
             if (!doctorData) {
                 resolve({
                     errCode: 1,
@@ -127,8 +187,8 @@ const updateDoctorInfor = (id, data) => {
                 return;
             }
 
-            const updateDoctorInfor = await doctorInfor.updateOne(
-                { doctorId: id },
+            const updateDoctorInfor = await doctorInfor.findOneAndUpdate(
+                { doctorInforId: id },
                 data,
                 { new: true }
             );
@@ -190,11 +250,26 @@ const searchDoctor = (data) => {
     });
 }
 
+const getDropdownDoctors = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const dropdownDoctors = await doctorInfor.find()
 
+            resolve({
+                errCode: 0,
+                message: "Get dropdown doctor successfully",
+                data: dropdownDoctors
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 
 export default {
     getDoctorInfor,
     updateDoctorInfor,
     searchDoctor,
-    getAllDoctor
+    getAllDoctor,
+    getDropdownDoctors
 };

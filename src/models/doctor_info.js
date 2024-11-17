@@ -17,23 +17,19 @@ const doctorInfoSchema = new Schema({
     specialtyId: {
         type: Number,
         ref: 'Specialty',
-        required: true
     },
     clinicId: {
         type: Number,
         ref: 'Clinic',
-        required: true
     },
     price: {
         type: String,
-        required: true
     },
     note: {
         type: String
     },
     position: {
         type: String,
-        required: true,
         ref: 'Allcodes'
     },
     description: {

@@ -85,7 +85,20 @@ const deleteClinic = async (req, res) => {
 
 const filterClinics = async (req, res) => {
     try {
-        const data = await clinicService.filterClinics(req.body);
+        const data = await clinicService.filterClinics(req.query);
+        return res.status(200).json(data)
+    } catch (err) {
+        console.log(err)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
+
+const getDropdownClinics = async (req, res) => {
+    try {
+        const data = await clinicService.getDropdownClinics();
         return res.status(200).json(data)
     } catch (err) {
         console.log(err)
@@ -102,5 +115,6 @@ export default {
     getAllClinic,
     getDetailClinic,
     deleteClinic,
-    filterClinics
+    filterClinics,
+    getDropdownClinics
 }

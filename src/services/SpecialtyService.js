@@ -56,14 +56,31 @@ const updateSpecialty = (id, data) => {
     })
 }
 
-const getAllSpecialty = () => {
+const getAllSpecialty = (query) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const specialties = await specialty.find()
+            const page = parseInt(query.page) || 1;
+            const limit = parseInt(query.limit) || 6;
+            let formatQuery = {}
+            // Sử dụng biểu thức chính quy để tìm kiếm không chính xác
+            if (query.query) {
+                formatQuery = {
+                    $or: [
+                        { name: { $regex: query.query, $options: 'i' } }, // Tìm trong trường 'name'
+                        { address: { $regex: query.query, $options: 'i' } }, // Tìm trong trường 'address'
+                    ],
+                };
+            }
+            const specialties = await specialty.find(formatQuery)
+                .skip((page - 1) * limit)
+                .limit(limit);
+            const totalSpecialties = await specialty.countDocuments()
+            const totalPages = Math.ceil(totalSpecialties / limit);
             resolve({
                 errCode: 0,
                 message: "Get all specialty successfully",
-                data: specialties
+                data: specialties,
+                totalPages
             })
 
         } catch (e) {
@@ -152,11 +169,28 @@ const filterSpecialty = (data) => {
     });
 };
 
+const getDropdownSpecialty = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const specialties = await specialty.find()
+            resolve({
+                errCode: 0,
+                message: "Get dropdown specialty successfully",
+                data: specialties
+            })
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 export default {
     createSpecialty,
     updateSpecialty,
     getAllSpecialty,
     getDetailSpecialty,
     deleteSpecialty,
-    filterSpecialty
+    filterSpecialty,
+    getDropdownSpecialty
 }

@@ -13,7 +13,8 @@ import {
   verifyUserController,
   createAndSendOTPController,
   getUserByNameOrEmailController,
-  updatePasswordController
+  updatePasswordController,
+  getDropdownUsersController
 } from "../controllers/UserController.js";
 import {
   authAdminMiddleware,
@@ -25,6 +26,7 @@ import upload from "../utils/fileUpload.js";
 const router = express.Router();
 
 //CRUD user
+router.get("/dropdown", authAdminMiddleware, getDropdownUsersController); //Lấy dropdown user
 router.get("/search", authAdminMiddleware, getUserByNameOrEmailController); //Tìm kiếm user theo tên, email
 router.get("/", authAdminMiddleware, getAllUserController); //Lấy tất cả user
 router.get("/:id", authMiddleware, getDetailsUserController); //Lấy thông tin một user

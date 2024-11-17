@@ -39,7 +39,7 @@ const updateSpecialty = async (req, res) => {
 
 const getAllSpecialty = async (req, res) => {
     try {
-        const data = await specialtyService.getAllSpecialty();
+        const data = await specialtyService.getAllSpecialty(req.query);
         return res.status(200).json(data)
     } catch (err) {
         console.log(err)
@@ -91,11 +91,25 @@ const filterSpecialty = async (req, res) => {
     }
 }
 
+const getDropdownSpecialty = async (req, res) => {
+    try {
+        const data = await specialtyService.getDropdownSpecialty();
+        return res.status(200).json(data)
+    } catch (err) {
+        console.log(err)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
+
 export default {
     createSpecialty,
     updateSpecialty,
     getAllSpecialty,
     getDetailSpecialty,
     deleteSpecialty,
-    filterSpecialty
+    filterSpecialty,
+    getDropdownSpecialty
 }

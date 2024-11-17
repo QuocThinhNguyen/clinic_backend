@@ -9,7 +9,7 @@ const getDoctorInfor = (id) => {
         try {
             // Tìm tài liệu doctor_info dựa trên doctorId
 
-            const doctorData = await doctorInfor.findOne({ doctorInforId: id });
+            const doctorData = await doctorInfor.findOne({ doctorId: id });
             if (!doctorData) {
                 resolve({
                     errCode: 1,
@@ -160,7 +160,7 @@ const getAllDoctor = (query) => {
 const updateDoctorInfor = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const doctorData = await doctorInfor.findOne({ doctorInforId: id });
+            const doctorData = await doctorInfor.findOne({ doctorId: id });
             if (!doctorData) {
                 resolve({
                     errCode: 1,

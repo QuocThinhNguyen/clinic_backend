@@ -167,31 +167,34 @@ const patientBooking = async (req, res) => {
 };
 
 const handlePaymentReturn = async (req, res) => {
-  try {
-    const { orderId, resultCode } = req.query;
-    console.log(req.query);
-    const bookingId = orderId.split('_')[0]; // Sử dụng orderId làm bookingId
-    const paymentStatus = resultCode === '0' ? 'success' : 'failed';
+  console.log('TEST HANDLE PAYMENT RETURN'); 
+  console.log('Response',res);
+  return paymentService.handlePaymentReturn(req, res);
+  // try {
+  //   const { orderId, resultCode } = req.query;
+  //   console.log(req.query);
+  //   const bookingId = orderId.split('_')[0]; // Sử dụng orderId làm bookingId
+  //   const paymentStatus = resultCode === '0' ? 'success' : 'failed';
 
-    if (paymentStatus === 'success') {
-      await bookingService.updateBookingStatus(bookingId, 'S2');
-      return res.status(200).json({
-        status: "OK",
-        message: "Payment successful",
-      });
-    } else {
-      return res.status(400).json({
-        status: "ERR",
-        message: "Payment failed",
-      });
-    }
-  } catch (e) {
-    console.log(e);
-    return res.status(500).json({
-      status: "ERR",
-      message: "Error from server",
-    });
-  }
+  //   if (paymentStatus === 'success') {
+  //     await bookingService.updateBookingStatus(bookingId, 'S2');
+  //     return res.status(200).json({
+  //       status: "OK",
+  //       message: "Payment successful",
+  //     });
+  //   } else {
+  //     return res.status(400).json({
+  //       status: "ERR",
+  //       message: "Payment failed",
+  //     });
+  //   }
+  // } catch (e) {
+  //   console.log(e);
+  //   return res.status(500).json({
+  //     status: "ERR",
+  //     message: "Error from server",
+  //   });
+  // }
 };
 
 export default {

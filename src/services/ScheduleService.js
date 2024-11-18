@@ -102,9 +102,12 @@ const getScheduleByDate = (id, date) => {
             doctorId: schedule.doctorId,
             scheduleDate: schedule.scheduleDate,
             timeTypes: [],
+            currentNumbers: []
           };
         }
         groupedSchedules[key].timeTypes.push(schedule.timeType);
+        groupedSchedules[key].currentNumbers.push(schedule.currentNumber);
+
       });
 
       // Chuyển đổi groupedSchedules thành mảng
@@ -112,6 +115,7 @@ const getScheduleByDate = (id, date) => {
         doctorId: item.doctorId,
         scheduleDate: item.scheduleDate,
         timeTypes: item.timeTypes,
+        currentNumbers: item.currentNumbers,
       }));
 
       resolve({

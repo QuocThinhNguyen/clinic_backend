@@ -34,7 +34,7 @@ const bookingSchema = new Schema({
   },
   reason: {
     type: String,
-    required: true,
+    default:''
   },
   status: {
     type: String,

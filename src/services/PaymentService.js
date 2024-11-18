@@ -1,6 +1,10 @@
 import crypto from 'crypto';
 import axios from 'axios';
 import momoConfig from '../config/momoConfig.js';
+import bookingService from '../services/BookingService.js';
+import Schedules from "../models/schedule.js";
+import Booking from "../models/booking.js";
+
 
 const createPaymentUrl = async (bookingId, amount, orderInfo) => {
     const requestId = bookingId + '_' + new Date().getTime();
@@ -44,13 +48,84 @@ const createPaymentUrl = async (bookingId, amount, orderInfo) => {
                 'Content-Type': 'application/json'
             }
         });
+        console.log('Payment URL:', response);
+        // const bookingId = response.data.requestId.split('_')[0];
+        // await bookingService.updateBookingStatus(bookingId, "S2");
+        const bookingIdFromRequestId = response.data.requestId.split('_')[0];
+        await bookingService.updateBookingPaymentUrl(bookingIdFromRequestId, response.data.payUrl);
         return response.data.payUrl;
     } catch (error) {
         console.error('Error creating payment URL:', error.response ? error.response.data : error.message);
         throw error;
     }
 };
+const handlePaymentReturn = async (req, res) => {
+    try {
+      console.log('QUERYYYYY',req.query);
+      const { orderId, resultCode } = req.query;
+      const bookingId = orderId.split('_')[0];
+
+      if (resultCode === '0') {
+        // Thanh toán thành công
+        await bookingService.updateBookingStatus(bookingId, "S2");
+        // const booking = await bookingService.getBooking(bookingId);
+
+        const booking = await Booking.findOne({
+          bookingId: bookingId,
+        })
+          .populate("doctorId", "fullname email")
+          .populate({
+            path: "doctorId",
+            model: "Users",
+            localField: "doctorId",
+            foreignField: "userId",
+            select: "fullname email",
+          })
+          .populate({
+            path: "patientRecordId",
+            model: "PatientRecords",
+            localField: "patientRecordId",
+            foreignField: "patientRecordId",
+            select: "fullname gender phoneNumber birthDate",
+          });
+        const { doctorId, appointmentDate, timeType } = booking;
+        const appointmentDateString = appointmentDate.toISOString().split('T')[0]; // Chỉ lấy phần ngày
+
+        console.log('Bookingggg:', booking);
+        console.log('DoctorIDee:', doctorId.userId);
+        console.log('AppointmentDateeee:', appointmentDateString);
+        console.log('TimeTypeêe:', timeType);
+        const schedule = await Schedules.findOne({
+          doctorId: doctorId.userId,
+          scheduleDate: appointmentDateString,
+          timeType: timeType
+        });
+        schedule.currentNumber += 1;
+              await schedule.save();
+
+        return res.redirect('http://localhost:5173/user/appointments');
+        // return res.status(200).json({
+        //   status: "OK",
+        //   message: "Payment successful",
+        // });
+      } else {
+        // Thanh toán thất bại
+        await bookingService.updateBookingStatus(bookingId, "S3");
+        return res.status(400).json({
+          status: "ERR",
+          message: "Payment failed",
+        });
+      }
+    } catch (error) {
+      console.error('Error handling payment return:', error.message);
+      return res.status(500).json({
+        status: "ERR",
+        message: "Error from server",
+      });
+    }
+  };
 
 export default {
-    createPaymentUrl
+    createPaymentUrl,
+    handlePaymentReturn
 };

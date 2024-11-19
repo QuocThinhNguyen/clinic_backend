@@ -13,5 +13,6 @@ router.get('/', specialtyController.getAllSpecialty)
 router.get('/:id', specialtyController.getDetailSpecialty)
 router.delete('/:id', authAdminMiddleware, specialtyController.deleteSpecialty)
 router.post('/filterClinic', specialtyController.filterSpecialty)
+router.get('/clinicId/:clinicId', specialtyController.getSpecialtyByClinicId)
 
 export default router

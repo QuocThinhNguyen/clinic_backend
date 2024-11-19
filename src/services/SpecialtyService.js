@@ -187,7 +187,7 @@ const getSpecialtyByClinicId = (clinicId) => {
         model: "Specialty",
         localField: "specialtyId",
         foreignField: "specialtyId",
-        select: "specialtyId name",
+        select: "specialtyId name image",
       }); // Sử dụng populate để lấy thông tin specialty liên quan
 
       // Chuyển các specialtyId đã được populate thành một mảng các specialty

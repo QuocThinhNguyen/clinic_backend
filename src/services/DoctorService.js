@@ -9,7 +9,7 @@ const getDoctorInfor = (id) => {
         try {
             // Tìm tài liệu doctor_info dựa trên doctorId
 
-            const doctorData = await doctorInfor.findOne({ doctorInforId: id });
+            const doctorData = await doctorInfor.findOne({ doctorId: id });
             if (!doctorData) {
                 resolve({
                     errCode: 1,
@@ -68,49 +68,8 @@ const getAllDoctor = (query) => {
                     ]
                 };
             }
-            // const allDoctor = await doctorInfor.aggregate([
-            //     {
-            //         $lookup: {
-            //             from: 'users', // Tên bộ sưu tập của người dùng
-            //             localField: 'doctorId', // Trường doctor có doctorId
-            //             foreignField: 'userId', // Trường userId của user
-            //             as: 'user'
-            //         }
-            //     },
-            //     {
-            //         $lookup: {
-            //             from: 'clinics', // Tên bộ sưu tập của phòng khám
-            //             localField: 'clinicId', // Trường doctor có clinicId
-            //             foreignField: 'clinicId', // Trường clinicId của clinic
-            //             as: 'clinic'
-            //         }
-            //     },
-            //     {
-            //         $lookup: {
-            //             from: 'specialties', // Tên bộ sưu tập của chuyên khoa
-            //             localField: 'specialtyId', // Trường doctor có specialtyId
-            //             foreignField: 'specialtyId', // Trường specialtyId của specialty
-            //             as: 'specialty'
-            //         }
-            //     },
-            //     {
-            //         $match: formatQuery // Áp dụng bộ lọc từ formatQuery
-            //     },
-            //     {
-            //         $project: {
-            //             'user.fullname': 1,
-            //             'user.address': 1,
-            //             'user.image': 1,
-            //             'user.phoneNumber': 1,
-            //             'clinic.name': 1,
-            //             'specialty.name': 1,
-            //             position: 1,
-            //             clinicId: 1,
-            //             specialtyId: 1,
-            //         }
-            //     }
-            // ])
-            const allDoctor = await doctorInfor.find(formatQuery)
+
+            const allDoctor = await doctorInfor.find()
                 .populate({
                     path: 'doctorId',
                     model: 'Users',
@@ -132,22 +91,38 @@ const getAllDoctor = (query) => {
                     foreignField: 'clinicId',
                     select: 'name'
                 })
-                //.populate({
-                //     path: 'position',
-                //     model: 'Allcodes',
-                //     localField: 'position',
-                //     foreignField: 'keyMap',
-                //     select: 'valueVi'
-                // })
-                .skip((page - 1) * limit)
-                .limit(limit)
-            const totalDoctors = await doctorInfor.countDocuments()
-            const totalPages = Math.ceil(totalDoctors / limit);
+            // .skip((page - 1) * limit)
+            // .limit(limit)
+
+            // Bộ lọc
+            const regex = new RegExp(query.query, 'i');
+
+            // 1. Tính tổng số lượng doctor phù hợp (không phân trang)
+            const totalFilteredDoctors = allDoctor.filter((doctor) => {
+                return (
+                    regex.test(doctor.doctorId?.fullname) ||
+                    regex.test(doctor.clinicId?.name) ||
+                    regex.test(doctor.specialtyId?.name)
+                );
+            }).length;
+
+            // 2. Áp dụng skip và limit cho danh sách đã filter
+            const filteredDoctors = allDoctor
+                .filter((doctor) => {
+                    return (
+                        regex.test(doctor.doctorId?.fullname) ||
+                        regex.test(doctor.clinicId?.name) ||
+                        regex.test(doctor.specialtyId?.name)
+                    );
+                })
+                .slice((page - 1) * limit, page * limit); // Phân trang bằng slice
+            // tính totalPages
+            const totalPages = Math.ceil(totalFilteredDoctors / limit);
 
             resolve({
                 errCode: 0,
                 errMessage: "Success",
-                data: allDoctor,
+                data: filteredDoctors,
                 totalPages
             })
         } catch (e) {
@@ -159,7 +134,7 @@ const getAllDoctor = (query) => {
 const updateDoctorInfor = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const doctorData = await doctorInfor.findOne({ doctorInforId: id });
+            const doctorData = await doctorInfor.findOne({ doctorId: id });
             if (!doctorData) {
                 resolve({
                     errCode: 1,
@@ -172,7 +147,7 @@ const updateDoctorInfor = (id, data) => {
             const specialtyData = await specialties.findOne({ specialtyId: doctorData.specialtyId });
             const clinicData = await clinics.findOne({ clinicId: doctorData.clinicId });
 
-            const updateUser = await users.updateOne(
+            const updateUser = await users.findOneAndUpdate(
                 { userId: id },
                 data,
                 { new: true }
@@ -187,7 +162,7 @@ const updateDoctorInfor = (id, data) => {
             }
 
             const updateDoctorInfor = await doctorInfor.findOneAndUpdate(
-                { doctorInforId: id },
+                { doctorId: id },
                 data,
                 { new: true }
             );

@@ -48,9 +48,10 @@ export const createUserService = (newUser) => {
       });
       if (createdUser) {
         if (createdUser.roleId === "R2") {
-          await DoctorInfor.create({
+          const a = await DoctorInfor.create({
             doctorId: createdUser.userId
           })
+          console.log(a)
         }
         resolve({
           status: "OK",
@@ -211,6 +212,7 @@ export const deleteUserService = (id) => {
       }
 
       await User.findOneAndDelete({ userId: id });
+      await DoctorInfor.findOneAndDelete({doctorId: id})
       resolve({
         status: "OK",
         message: "Delete user success",
@@ -235,7 +237,7 @@ export const getAllUserService = (query, skip, limit) => {
         };
       }
       const allUsers = await User.find(formatQuery).skip(skip).limit(limit);
-      const totalUsers = await User.countDocuments()
+      const totalUsers = await User.countDocuments(formatQuery)
       const totalPages = Math.ceil(totalUsers / limit);
       resolve({
         status: "OK",
@@ -254,18 +256,28 @@ export const getDetailsUserService = (id) => {
     try {
       const user = await User.findOne({
         userId: id,
-      });
+      }).lean();
       if (user === null) {
         resolve({
           status: "ERR",
           message: "The user is not defined",
         });
       }
+      let formatUser = {
+        ...user
+      }
+      if (user.birthDate) {
+        const birthDateOnly = user.birthDate.toISOString().split('T')[0];
+        formatUser = {
+          ...user,
+          birthDate: birthDateOnly
+        }
+      }
 
       resolve({
         status: "OK",
         message: "Success",
-        data: user,
+        data: formatUser,
       });
     } catch (e) {
       reject(e);

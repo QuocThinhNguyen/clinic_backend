@@ -6,6 +6,7 @@ import { authAdminMiddleware, authDoctorMiddleware } from '../middlewares/authMi
 
 const router = express.Router();
 
+router.get('/dropdown', doctorController.getDropdownDoctors);
 router.get('/search', doctorController.searchDoctor);
 router.get('/', doctorController.getAllDoctor);
 router.get('/:id', doctorController.getDoctorInfor);

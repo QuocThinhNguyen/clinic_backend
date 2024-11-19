@@ -229,6 +229,27 @@ const getDropdownDoctors = () => {
     return new Promise(async (resolve, reject) => {
         try {
             const dropdownDoctors = await doctorInfor.find()
+                .populate({
+                    path: 'doctorId',
+                    model: 'Users',
+                    localField: 'doctorId',
+                    foreignField: 'userId',
+                    select: 'email fullname address gender birthDate phoneNumber image'
+                })
+                .populate({
+                    path: 'specialtyId',
+                    model: 'Specialty',
+                    localField: 'specialtyId',
+                    foreignField: 'specialtyId',
+                    select: 'name'
+                })
+                .populate({
+                    path: 'clinicId',
+                    model: 'Clinic',
+                    localField: 'clinicId',
+                    foreignField: 'clinicId',
+                    select: 'name address'
+                })
 
             resolve({
                 errCode: 0,

@@ -3,12 +3,13 @@ import scheduleService from "../services/ScheduleService.js";
 const getAllScheduleByDate = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 6;
     const date = req.query.date;
     const response = await scheduleService.getAllScheduleByDate(
       date,
       page,
-      limit
+      limit,
+      req.query
     );
     return res.status(200).json(response);
   } catch (e) {

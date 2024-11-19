@@ -1,6 +1,6 @@
 import Schedule from "../models/schedule.js";
 
-const getAllScheduleByDate = (date, page, limit) => {
+const getAllScheduleByDate = (date, page, limit, query) => {
   return new Promise(async (resolve, reject) => {
     try {
       const filter = {};
@@ -12,8 +12,8 @@ const getAllScheduleByDate = (date, page, limit) => {
       }
       // Truy vấn Schedule theo filter (có thể có hoặc không có scheduleDate)
       const allScheduleByDate = await Schedule.find(filter)
-        .skip((page - 1) * limit)
-        .limit(limit)
+        // .skip((page - 1) * limit)
+        // .limit(limit)
         .populate({
           path: "doctorId",
           model: "Users",
@@ -39,18 +39,38 @@ const getAllScheduleByDate = (date, page, limit) => {
         }
         groupedSchedules[key].timeTypes.push(schedule.timeType);
       });
+      // Bộ lọc
+      const regex = new RegExp(query.query, 'i');
+
       // Chuyển đổi groupedSchedules thành mảng
       const result = Object.values(groupedSchedules).map((item) => ({
         doctorId: item.doctorId,
-        scheduleDate: item.scheduleDate,
+        scheduleDate: item.scheduleDate.toISOString().split('T')[0],
         timeTypes: item.timeTypes,
-      }));
+      }))//.slice((page - 1) * limit, page * limit);
+      //Tính tổng số lượng kết quả phù hợp (không phân trang)
+      const totalFilteredResults = result.filter((doctor) => {
+        return (
+          regex.test(doctor.doctorId?.fullname)
+        );
+      }).length;
+      //Áp dụng skip và limit cho danh sách đã filter
+      const filteredResults = result.filter((doctor) => {
+        return (
+          regex.test(doctor.doctorId?.fullname)
+        );
+      });
+      const sortedResults = filteredResults.sort((a, b) => {
+        const dateA = new Date(a.scheduleDate);
+        const dateB = new Date(b.scheduleDate);
+        return dateA - dateB;
+      }).slice((page - 1) * limit, page * limit);
+      const totalPages = Math.ceil(totalFilteredResults / limit);
       resolve({
         status: "OK",
         message: "SUCCESS",
-        data: result,
-        currentPage: page,
-        limit: limit,
+        data: sortedResults,
+        totalPages,
       });
     } catch (e) {
       reject(e.message);
@@ -113,7 +133,7 @@ const getScheduleByDate = (id, date) => {
       // Chuyển đổi groupedSchedules thành mảng
       const result = Object.values(groupedSchedules).map((item) => ({
         doctorId: item.doctorId,
-        scheduleDate: item.scheduleDate,
+        scheduleDate: item.scheduleDate.toISOString().split('T')[0],
         timeTypes: item.timeTypes,
         currentNumbers: item.currentNumbers,
       }));

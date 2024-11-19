@@ -103,7 +103,7 @@ const handlePaymentReturn = async (req, res) => {
         schedule.currentNumber += 1;
               await schedule.save();
 
-        return res.redirect('http://localhost:5173/user/appointments');
+        return res.redirect('http://localhost:3000/user/appointments');
         // return res.status(200).json({
         //   status: "OK",
         //   message: "Payment successful",

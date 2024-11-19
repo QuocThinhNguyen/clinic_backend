@@ -1,7 +1,6 @@
 import Booking from "../models/booking.js";
 import Users from "../models/users.js";
 import PatientRecords from "../models/patient_records.js";
-
 import Schedules from "../models/schedule.js";
 
 import Clinic from "../models/clinic.js";
@@ -261,6 +260,18 @@ const updateBooking = (id, data) => {
         });
       }
 
+      if (data.status === "S4") {
+        const schedule = await Schedules.findOne({
+          doctorId: checkBooking.doctorId,
+          scheduleDate: checkBooking.appointmentDate.toISOString().split('T')[0],
+          timeType: checkBooking.timeType
+        });
+
+        if (schedule) {
+          schedule.currentNumber -= 1;
+          await schedule.save();
+        }
+      }
       const updatedBooking = await Booking.findOneAndUpdate(
         { bookingId: id }, // Điều kiện tìm kiếm
         data, // Giá trị cần cập nhật
@@ -356,7 +367,8 @@ const patientBooking = (data) => {
           doctorId: data.doctorId,
           patientRecordId: data.patientRecordId,
           appointmentDate: data.appointmentDate,
-          timeType: data.timeType
+          timeType: data.timeType,
+          status: "S2" || "S3"||"S4"
         })
         console.log(existingBooking);
 
@@ -375,8 +387,8 @@ const patientBooking = (data) => {
           console.log(schedule);
           if (schedule) {
             if (schedule.currentNumber < schedule.maxNumber) {
-              schedule.currentNumber += 1;
-              await schedule.save();
+              // schedule.currentNumber += 1;
+              // await schedule.save();
 
               const newBooking = await Booking.create({
                 doctorId: data.doctorId,
@@ -384,8 +396,8 @@ const patientBooking = (data) => {
                 appointmentDate: data.appointmentDate,
                 timeType: data.timeType,
                 price: data.price,
-                reason: data.reason,
-                status: "S2"
+                reason: data.reason || '',
+                status: "S1"
               })
               await newBooking.save();
 
@@ -442,6 +454,40 @@ const updateBookingStatus = (bookingId, status) => {
   })
 }
 
+const deleteBooking = async()=>{
+
+}
+const updateBookingPaymentUrl = async (bookingId, paymentUrl) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const booking = await Booking.findOneAndUpdate(
+        { bookingId: bookingId },
+        { paymentUrl: paymentUrl },
+        { new: true }
+      );
+
+      if (!booking) {
+        return resolve({
+          status: "ERR",
+          message: "Booking not found",
+        });
+      }
+
+      resolve({
+        status: "OK",
+        message: "Payment URL updated successfully",
+        data: booking,
+      });
+    } catch (e) {
+      reject({
+        status: "ERR",
+        message: "Error from server",
+        error: e.message,
+      });
+    }
+  });
+};
+
 export default {
   getAllBookingByUserId,
   getAllBooking,
@@ -450,5 +496,6 @@ export default {
   updateBooking,
   getBookingByDoctorId,
   patientBooking,
-  updateBookingStatus
+  updateBookingStatus,
+  updateBookingPaymentUrl
 };

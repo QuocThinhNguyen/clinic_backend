@@ -52,37 +52,34 @@ const updateSpecialty = (id, data) => {
 };
 
 const getAllSpecialty = (query) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const page = parseInt(query.page) || 1;
-      const limit = parseInt(query.limit) || 6;
-      let formatQuery = {};
-      // Sử dụng biểu thức chính quy để tìm kiếm không chính xác
-      if (query.query) {
-        formatQuery = {
-          $or: [
-            { name: { $regex: query.query, $options: "i" } }, // Tìm trong trường 'name'
-            { address: { $regex: query.query, $options: "i" } }, // Tìm trong trường 'address'
-          ],
-        };
-      }
-      const specialties = await specialty
-        .find(formatQuery)
-        .skip((page - 1) * limit)
-        .limit(limit);
-      const totalSpecialties = await specialty.countDocuments();
-      const totalPages = Math.ceil(totalSpecialties / limit);
-      resolve({
-        errCode: 0,
-        message: "Get all specialty successfully",
-        data: specialties,
-        totalPages,
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
+    return new Promise(async (resolve, reject) => {
+        try {
+            const page = parseInt(query.page) || 1;
+            const limit = parseInt(query.limit) || 6;
+            let formatQuery = {}
+            // Sử dụng biểu thức chính quy để tìm kiếm không chính xác
+            if (query.query) {
+                formatQuery = {
+                    name: { $regex: query.query, $options: 'i' }
+                };
+            }
+            const specialties = await specialty.find(formatQuery)
+                .skip((page - 1) * limit)
+                .limit(limit);
+            const totalSpecialties = await specialty.countDocuments(formatQuery)
+            const totalPages = Math.ceil(totalSpecialties / limit);
+            resolve({
+                errCode: 0,
+                message: "Get all specialty successfully",
+                data: specialties,
+                totalPages
+            })
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 
 const getDetailSpecialty = (id) => {
   return new Promise(async (resolve, reject) => {

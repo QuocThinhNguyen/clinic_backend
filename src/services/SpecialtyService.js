@@ -65,16 +65,13 @@ const getAllSpecialty = (query) => {
             // Sử dụng biểu thức chính quy để tìm kiếm không chính xác
             if (query.query) {
                 formatQuery = {
-                    $or: [
-                        { name: { $regex: query.query, $options: 'i' } }, // Tìm trong trường 'name'
-                        { address: { $regex: query.query, $options: 'i' } }, // Tìm trong trường 'address'
-                    ],
+                    name: { $regex: query.query, $options: 'i' }
                 };
             }
             const specialties = await specialty.find(formatQuery)
                 .skip((page - 1) * limit)
                 .limit(limit);
-            const totalSpecialties = await specialty.countDocuments()
+            const totalSpecialties = await specialty.countDocuments(formatQuery)
             const totalPages = Math.ceil(totalSpecialties / limit);
             resolve({
                 errCode: 0,

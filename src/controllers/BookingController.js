@@ -166,6 +166,31 @@ const patientBooking = async (req, res) => {
   }
 };
 
+const patientBookingDirect = async (req, res) => {
+  try {
+    const data = req.body;
+    const result = await bookingService.patientBookingDirect(data);
+    if (result.status === "OK") {
+      // console.log("IDDDD:", result.data.bookingId, typeof result.data.bookingId.toString());
+
+      const paymentUrl = await paymentService.createPaymentUrl(result.data.bookingId.toString(), result.data.price, 'Payment for booking');
+      return res.status(200).json({
+        status: "OK",
+        message: "Booking created successfully",
+        paymentUrl: paymentUrl
+      });
+    } else {
+      return res.status(400).json(result);
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      status: "ERR",
+      message: "Error from server",
+    });
+  }
+};
+
 const handlePaymentReturn = async (req, res) => {
   console.log('TEST HANDLE PAYMENT RETURN'); 
   console.log('Response',res);
@@ -205,5 +230,6 @@ export default {
   updateBooking,
   getBookingByDoctorId,
   patientBooking,
-  handlePaymentReturn
+  handlePaymentReturn,
+  patientBookingDirect
 };

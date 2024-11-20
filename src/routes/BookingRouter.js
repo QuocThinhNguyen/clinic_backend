@@ -5,7 +5,9 @@ import { authUserMiddleware, authAdminMiddleware, authDoctorMiddleware, authMidd
 
 const router = express.Router();
 
+router.post("/book-appointment-direct", authUserMiddleware, bookingController.patientBookingDirect);
 router.post("/book-appointment", authUserMiddleware, bookingController.patientBooking);
+
 // router.get("/vnpay_return", bookingController.handlePaymentReturn);
 router.get("/momo_return", bookingController.handlePaymentReturn); // Định nghĩa tuyến đường để xử lý phản hồi từ MoMo
 router.post("/allbooking", authMiddleware, bookingController.getAllBookingByUserId);

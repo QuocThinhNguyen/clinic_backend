@@ -407,7 +407,7 @@ const patientBooking = (data) => {
           patientRecordId: data.patientRecordId,
           appointmentDate: data.appointmentDate,
           timeType: data.timeType,
-          status: "S2" || "S3" || "S4"
+          status: "S1"||"S2" || "S3"||"S4"
         })
         console.log(existingBooking);
 
@@ -436,7 +436,81 @@ const patientBooking = (data) => {
                 timeType: data.timeType,
                 price: data.price,
                 reason: data.reason || '',
-                status: "S1"
+                status: 'S5'
+              })
+              await newBooking.save();
+
+              resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: newBooking,
+              });
+            } else {
+              resolve({
+                status: "ERR",
+                message: "This schedule is full",
+              });
+            }
+          } else {
+            resolve({
+              status: "ERR",
+              message: "This schedule is not existed",
+            });
+          }
+        }
+
+
+      }
+    } catch (e) {
+      reject(e)
+    }
+  })
+}
+
+const patientBookingDirect = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!data.doctorId || !data.patientRecordId || !data.appointmentDate || !data.timeType) {
+        resolve({
+          status: "ERR",
+          message: "Data is not enough",
+        });
+      } else {
+        const existingBooking = await Booking.findOne({
+          doctorId: data.doctorId,
+          patientRecordId: data.patientRecordId,
+          appointmentDate: data.appointmentDate,
+          timeType: data.timeType,
+          status: "S1"||"S2" || "S3"||"S4"
+        })
+        console.log(existingBooking);
+
+        if (existingBooking) {
+          resolve({
+            status: "ERR",
+            message: "This booking has already existed",
+          });
+        } else {
+          const schedule = await Schedules.findOne({
+            doctorId: data.doctorId,
+            scheduleDate: data.appointmentDate,
+            timeType: data.timeType
+          });
+
+          console.log(schedule);
+          if (schedule) {
+            if (schedule.currentNumber < schedule.maxNumber) {
+              // schedule.currentNumber += 1;
+              // await schedule.save();
+
+              const newBooking = await Booking.create({
+                doctorId: data.doctorId,
+                patientRecordId: data.patientRecordId,
+                appointmentDate: data.appointmentDate,
+                timeType: data.timeType,
+                price: data.price,
+                reason: data.reason || '',
+                status: 'S1'
               })
               await newBooking.save();
 
@@ -536,5 +610,6 @@ export default {
   getBookingByDoctorId,
   patientBooking,
   updateBookingStatus,
-  updateBookingPaymentUrl
+  updateBookingPaymentUrl,
+  patientBookingDirect
 };

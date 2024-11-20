@@ -29,7 +29,7 @@ const createSpecialty = (data) => {
 const updateSpecialty = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkSpecialty = await specialty.findOne({
+      const checkSpecialty = await Specialty.findOne({
         specialtyId: id,
       });
 
@@ -40,7 +40,7 @@ const updateSpecialty = (id, data) => {
         });
       }
 
-      await specialty.updateOne({ specialtyId: id }, data, { new: true });
+      await Specialty.updateOne({ specialtyId: id }, data, { new: true });
 
       resolve({
         errCode: 0,
@@ -185,7 +185,7 @@ const getSpecialtyByClinicId = (clinicId) => {
         model: "Specialty",
         localField: "specialtyId",
         foreignField: "specialtyId",
-        select: "specialtyId name image",
+        select: "specialtyId name image description",
       }); // Sử dụng populate để lấy thông tin specialty liên quan
 
       // Chuyển các specialtyId đã được populate thành một mảng các specialty

@@ -39,7 +39,7 @@ const bookingSchema = new Schema({
   status: {
     type: String,
     ref: "AllCodes",
-    required: true,
+    default:''
   },
 });
 

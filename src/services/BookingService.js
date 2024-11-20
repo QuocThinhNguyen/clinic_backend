@@ -407,7 +407,7 @@ const patientBooking = (data) => {
           patientRecordId: data.patientRecordId,
           appointmentDate: data.appointmentDate,
           timeType: data.timeType,
-          status: "S1"||"S2" || "S3"||"S4"
+          status: "S1"||"S2" || "S3"
         })
         console.log(existingBooking);
 
@@ -436,7 +436,7 @@ const patientBooking = (data) => {
                 timeType: data.timeType,
                 price: data.price,
                 reason: data.reason || '',
-                status: 'S5'
+                status: 'S4'
               })
               await newBooking.save();
 

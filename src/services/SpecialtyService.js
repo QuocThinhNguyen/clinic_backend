@@ -64,11 +64,11 @@ const getAllSpecialty = (query) => {
           name: { $regex: query.query, $options: "i" },
         };
       }
-      const specialties = await specialty
+      const specialties = await Specialty
         .find(formatQuery)
         .skip((page - 1) * limit)
         .limit(limit);
-      const totalSpecialties = await specialty.countDocuments(formatQuery);
+      const totalSpecialties = await Specialty.countDocuments(formatQuery);
       const totalPages = Math.ceil(totalSpecialties / limit);
       resolve({
         errCode: 0,

@@ -164,7 +164,7 @@ const filterSpecialty = (data) => {
 const getDropdownSpecialty = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const specialties = await specialty.find();
+      const specialties = await Specialty.find();
       resolve({
         errCode: 0,
         message: "Get dropdown specialty successfully",

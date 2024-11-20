@@ -1,3 +1,4 @@
+import Specialty from '../models/specialty.js';
 import specialty from '../models/specialty.js';
 
 const createSpecialty = (data) => {
@@ -185,6 +186,7 @@ const getDropdownSpecialty = () => {
     })
 }
 
+
 export default {
     createSpecialty,
     updateSpecialty,
@@ -192,5 +194,5 @@ export default {
     getDetailSpecialty,
     deleteSpecialty,
     filterSpecialty,
-    getDropdownSpecialty
+    getDropdownSpecialty,
 }

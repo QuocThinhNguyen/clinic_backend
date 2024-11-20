@@ -104,6 +104,7 @@ const getDropdownSpecialty = async (req, res) => {
     }
 }
 
+
 export default {
     createSpecialty,
     updateSpecialty,
@@ -111,5 +112,5 @@ export default {
     getDetailSpecialty,
     deleteSpecialty,
     filterSpecialty,
-    getDropdownSpecialty
+    getDropdownSpecialty,
 }

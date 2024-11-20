@@ -69,6 +69,7 @@ const getAllDoctor = (query) => {
                     ]
                 };
             }
+<<<<<<< Updated upstream
             // const allDoctor = await doctorInfor.aggregate([
             //     {
             //         $lookup: {
@@ -111,13 +112,24 @@ const getAllDoctor = (query) => {
             //         }
             //     }
             // ])
+=======
+
+// Thêm điều kiện truy vấn theo clinicId và specialtyId
+      if (query.clinicId) {
+        formatQuery.clinicId = query.clinicId;
+      }
+
+      if (query.specialtyId) {
+        formatQuery.specialtyId = query.specialtyId;
+      }
+>>>>>>> Stashed changes
             const allDoctor = await doctorInfor.find(formatQuery)
                 .populate({
                     path: 'doctorId',
                     model: 'Users',
                     localField: 'doctorId',
                     foreignField: 'userId',
-                    select: 'email fullname address gender birthDate phoneNumber image'
+                    select: 'email fullname address gender birthDate phoneNumber image userId'
                 })
                 .populate({
                     path: 'specialtyId',

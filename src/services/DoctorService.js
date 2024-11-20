@@ -70,13 +70,65 @@ const getAllDoctor = (query) => {
                 };
             }
 
+            // const allDoctor = await doctorInfor.aggregate([
+            //     {
+            //         $lookup: {
+            //             from: 'users', // Tên bộ sưu tập của người dùng
+            //             localField: 'doctorId', // Trường doctor có doctorId
+            //             foreignField: 'userId', // Trường userId của user
+            //             as: 'user'
+            //         }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: 'clinics', // Tên bộ sưu tập của phòng khám
+            //             localField: 'clinicId', // Trường doctor có clinicId
+            //             foreignField: 'clinicId', // Trường clinicId của clinic
+            //             as: 'clinic'
+            //         }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: 'specialties', // Tên bộ sưu tập của chuyên khoa
+            //             localField: 'specialtyId', // Trường doctor có specialtyId
+            //             foreignField: 'specialtyId', // Trường specialtyId của specialty
+            //             as: 'specialty'
+            //         }
+            //     },
+            //     {
+            //         $match: formatQuery // Áp dụng bộ lọc từ formatQuery
+            //     },
+            //     {
+            //         $project: {
+            //             'user.fullname': 1,
+            //             'user.address': 1,
+            //             'user.image': 1,
+            //             'user.phoneNumber': 1,
+            //             'clinic.name': 1,
+            //             'specialty.name': 1,
+            //             position: 1,
+            //             clinicId: 1,
+            //             specialtyId: 1,
+            //         }
+            //     }
+            // ])
+
+
+// Thêm điều kiện truy vấn theo clinicId và specialtyId
+      if (query.clinicId) {
+        formatQuery.clinicId = query.clinicId;
+      }
+      if (query.specialtyId) {
+        formatQuery.specialtyId = query.specialtyId;
+      }
+            const allDoctor = await doctorInfor.find(formatQuery)
             const allDoctor = await doctorInfor.find()
                 .populate({
                     path: 'doctorId',
                     model: 'Users',
                     localField: 'doctorId',
                     foreignField: 'userId',
-                    select: 'email fullname address gender birthDate phoneNumber image'
+                    select: 'email fullname address gender birthDate phoneNumber image userId'
                 })
                 .populate({
                     path: 'specialtyId',

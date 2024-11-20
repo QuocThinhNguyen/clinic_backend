@@ -127,4 +127,5 @@ export default {
     filterSpecialty,
     getDropdownSpecialty,
     getSpecialtyByClinicId
+
 }

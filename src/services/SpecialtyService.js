@@ -1,5 +1,6 @@
-import specialty from "../models/specialty.js";
+import Specialty from '../models/specialty.js';
 import DoctorInfo from "../models/doctor_info.js";
+
 const createSpecialty = (data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -208,6 +209,7 @@ const getSpecialtyByClinicId = (clinicId) => {
   });
 };
 
+
 export default {
   createSpecialty,
   updateSpecialty,
@@ -218,3 +220,4 @@ export default {
   getDropdownSpecialty,
   getSpecialtyByClinicId,
 };
+

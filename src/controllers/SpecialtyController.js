@@ -104,6 +104,19 @@ const getDropdownSpecialty = async (req, res) => {
     }
 }
 
+const getSpecialtyByClinicId = async (req, res) => {
+    try {
+        const clinicId = req.params.clinicId;
+        const data = await specialtyService.getSpecialtyByClinicId(clinicId);
+        return res.status(200).json(data)
+    } catch (err) {
+        console.log(err)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
 
 export default {
     createSpecialty,
@@ -113,4 +126,6 @@ export default {
     deleteSpecialty,
     filterSpecialty,
     getDropdownSpecialty,
+    getSpecialtyByClinicId
+
 }

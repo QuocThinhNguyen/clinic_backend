@@ -152,21 +152,16 @@ const filterClinics = (query) => {
             const clinics = await clinic.find(formatQuery)
                 .skip((page - 1) * limit)
                 .limit(limit);
-            const totalClinics = await clinic.countDocuments()
+            const totalClinics = await clinic.countDocuments(formatQuery)
             const totalPages = Math.ceil(totalClinics / limit);
-            if (clinics.length === 0) {
-                resolve({
-                    errCode: 1,
-                    errMessage: "No clinic found"
-                });
-            } else {
-                resolve({
-                    errCode: 0,
-                    message: "Filter clinic successfully",
-                    data: clinics,
-                    totalPages
-                });
-            }
+
+            resolve({
+                errCode: 0,
+                message: "Filter clinic successfully",
+                data: clinics,
+                totalPages
+            });
+
         } catch (e) {
             reject(e);
         }

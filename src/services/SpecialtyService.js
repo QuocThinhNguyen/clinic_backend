@@ -1,4 +1,4 @@
-import Specialty from '../models/specialty.js';
+import Specialty from "../models/specialty.js";
 import DoctorInfo from "../models/doctor_info.js";
 
 const createSpecialty = (data) => {
@@ -10,7 +10,7 @@ const createSpecialty = (data) => {
           errMessage: "Missing required fields",
         });
       } else {
-        await specialty.create({
+        await Specialty.create({
           name: data.name,
           image: data.image,
           description: data.description,
@@ -64,8 +64,7 @@ const getAllSpecialty = (query) => {
           name: { $regex: query.query, $options: "i" },
         };
       }
-      const specialties = await Specialty
-        .find(formatQuery)
+      const specialties = await Specialty.find(formatQuery)
         .skip((page - 1) * limit)
         .limit(limit);
       const totalSpecialties = await Specialty.countDocuments(formatQuery);
@@ -209,7 +208,6 @@ const getSpecialtyByClinicId = (clinicId) => {
   });
 };
 
-
 export default {
   createSpecialty,
   updateSpecialty,
@@ -220,4 +218,3 @@ export default {
   getDropdownSpecialty,
   getSpecialtyByClinicId,
 };
-

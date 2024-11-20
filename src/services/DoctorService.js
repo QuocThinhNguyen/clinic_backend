@@ -122,7 +122,6 @@ const getAllDoctor = (query) => {
         formatQuery.specialtyId = query.specialtyId;
       }
             const allDoctor = await doctorInfor.find(formatQuery)
-            const allDoctor = await doctorInfor.find()
                 .populate({
                     path: 'doctorId',
                     model: 'Users',

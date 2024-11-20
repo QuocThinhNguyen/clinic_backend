@@ -64,9 +64,24 @@ const searchDoctor = async (req, res) => {
         })
     }
 }
+
+const getDropdownDoctors = async (req, res) => {
+    try {
+        const data = await doctorInforService.getDropdownDoctors();
+        return res.status(200).json(data)
+    } catch (err) {
+        console.log(err)
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: "Error from server"
+        })
+    }
+}
+
 export default {
     getDoctorInfor,
     updateDoctorInfor,
     searchDoctor,
-    getAllDoctor
+    getAllDoctor,
+    getDropdownDoctors
 }

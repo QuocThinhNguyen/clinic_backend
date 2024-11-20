@@ -33,27 +33,27 @@ const getAllBookingByUserId = async (req, res) => {
 
 const getAllBooking = async (req, res) => {
   try {
-    const { search, date, status, page = 1, limit = 10 } = req.query;
-    let query = {};
-    if (search) {
-      query.name = search.replace(/\s+/g, " ").trim(); //Lọc theo tên nếu có
-    }
-    if (status) {
-      query.status = status.replace(/\s+/g, " ").trim(); //Lọc theo trạng thái nếu có
-    }
-    if (date) {
-      const parsedDate = new Date(date);
-      if (isNaN(parsedDate.getTime())) {
-        return res.status(400).json({
-          message: "Invalid date format",
-        });
-      }
-      query.appointmentDate = {
-        $gte: new Date(date + "T00:00:00Z"),
-        $lt: new Date(date + "T23:59:59Z"),
-      };
-    }
-    const data = await bookingService.getAllBooking(query, page, limit);
+    // const { search, date, status, page = 1, limit = 6 } = req.query;
+    // let query = {};
+    // if (search) {
+    //   query.name = search.replace(/\s+/g, " ").trim(); //Lọc theo tên nếu có
+    // }
+    // if (status) {
+    //   query.status = status.replace(/\s+/g, " ").trim(); //Lọc theo trạng thái nếu có
+    // }
+    // if (date) {
+    //   const parsedDate = new Date(date);
+    //   if (isNaN(parsedDate.getTime())) {
+    //     return res.status(400).json({
+    //       message: "Invalid date format",
+    //     });
+    //   }
+    //   query.appointmentDate = {
+    //     $gte: new Date(date + "T00:00:00Z"),
+    //     $lt: new Date(date + "T23:59:59Z"),
+    //   };
+    // }
+    const data = await bookingService.getAllBooking(req.query);
     return res.status(200).json(data);
   } catch (e) {
     return res.status(404).json({

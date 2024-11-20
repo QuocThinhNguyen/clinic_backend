@@ -92,7 +92,7 @@ export const createAndSendOTPService = async (newUser, otp_token) => {
                     resolve({
                         status: 'OK',
                         message: text,
-                        data: verifyLink
+                        otp_token: otp_token
                     })
                 }
             }
@@ -107,7 +107,7 @@ export const createAndSendOTPService = async (newUser, otp_token) => {
             resolve({
                 status: 'OK',
                 message: text,
-                data: verifyLink
+                otp_token: otp_token
             })
         } catch (e) {
             reject(e)

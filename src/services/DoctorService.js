@@ -69,7 +69,6 @@ const getAllDoctor = (query) => {
                     ]
                 };
             }
-<<<<<<< Updated upstream
             // const allDoctor = await doctorInfor.aggregate([
             //     {
             //         $lookup: {
@@ -112,7 +111,7 @@ const getAllDoctor = (query) => {
             //         }
             //     }
             // ])
-=======
+
 
 // Thêm điều kiện truy vấn theo clinicId và specialtyId
       if (query.clinicId) {
@@ -122,7 +121,7 @@ const getAllDoctor = (query) => {
       if (query.specialtyId) {
         formatQuery.specialtyId = query.specialtyId;
       }
->>>>>>> Stashed changes
+
             const allDoctor = await doctorInfor.find(formatQuery)
                 .populate({
                     path: 'doctorId',

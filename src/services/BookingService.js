@@ -481,7 +481,7 @@ const patientBookingDirect = (data) => {
           patientRecordId: data.patientRecordId,
           appointmentDate: data.appointmentDate,
           timeType: data.timeType,
-          status: "S1"||"S2" || "S3"||"S4"
+          status: "S1"||"S2" || "S3"
         })
         console.log(existingBooking);
 

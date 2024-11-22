@@ -140,4 +140,37 @@
   "valueVi": "16:00 - 17:00",
   "id": 14,
   "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6740ae833b9b96cb2dfd192f"
+  },
+  "keyMap": "P1",
+  "type": "Position",
+  "valueEn": "Head of Department",
+  "valueVi": "Trưởng khoa",
+  "id": 15,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6740aeae3b9b96cb2dfd1931"
+  },
+  "keyMap": "P2",
+  "type": "Position",
+  "valueEn": "Professor",
+  "valueVi": "Giáo sư",
+  "id": 16,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6740aece3b9b96cb2dfd1932"
+  },
+  "keyMap": "P3",
+  "type": "Position",
+  "valueEn": "Associate Professor",
+  "valueVi": "Phó giáo sư",
+  "id": 17,
+  "__v": 0
 }]

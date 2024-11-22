@@ -84,7 +84,7 @@ const getAllSpecialty = (query) => {
 const getDetailSpecialty = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const specialtyData = await specialty.findOne({
+      const specialtyData = await Specialty.findOne({
         specialtyId: id,
       });
       if (!specialtyData) {
@@ -107,7 +107,7 @@ const getDetailSpecialty = (id) => {
 const deleteSpecialty = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const findSpecialty = await specialty.findOne({
+      const findSpecialty = await Specialty.findOne({
         specialtyId: id,
       });
 
@@ -141,7 +141,7 @@ const filterSpecialty = (data) => {
         query.name = { $regex: data.name, $options: "i" }; // 'i' để không phân biệt chữ hoa chữ thường
       }
 
-      const specialtyData = await specialty.find(query);
+      const specialtyData = await Specialty.find(query);
 
       if (specialtyData.length === 0) {
         resolve({

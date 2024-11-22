@@ -10,6 +10,7 @@ import patientRecordsRouter from "./PatientRecordsRouter.js"
 import scheduleRouter from "./ScheduleRouter.js"
 import adminRouter from "./AdminRouter.js"
 import allCodeRouter from "./AllCodeRouter.js"
+import {handleError} from "../middlewares/authMiddleware.js"
 
 const routes = (app) => {
     app.use('/', homePageRouter)
@@ -22,6 +23,7 @@ const routes = (app) => {
     app.use('/doctor', doctorInforRouter)
     app.use('/admin', adminRouter)
     app.use('/allcode', allCodeRouter)
+    app.use(handleError);
 }
 
 export default routes

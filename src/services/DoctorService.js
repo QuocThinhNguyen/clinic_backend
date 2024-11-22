@@ -60,15 +60,15 @@ const getAllDoctor = (query) => {
             const limit = parseInt(query.limit) || 6;
             let formatQuery = {}
             // Sử dụng biểu thức chính quy để tìm kiếm không chính xác
-            if (query.query) {
-                formatQuery = {
-                    $or: [
-                        { 'doctorId.fullname': { $regex: query.query, $options: 'i' } },
-                        { 'clinicId.name': { $regex: query.query, $options: 'i' } },
-                        { 'specialtyId.name': { $regex: query.query, $options: 'i' } }
-                    ]
-                };
-            }
+            // if (query.query) {
+            //     formatQuery = {
+            //         $or: [
+            //             { 'doctorId.fullname': { $regex: query.query, $options: 'i' } },
+            //             { 'clinicId.name': { $regex: query.query, $options: 'i' } },
+            //             { 'specialtyId.name': { $regex: query.query, $options: 'i' } }
+            //         ]
+            //     };
+            // }
 
             const allDoctor = await doctorInfor.find()
                 .populate({

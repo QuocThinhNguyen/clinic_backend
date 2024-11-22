@@ -118,7 +118,7 @@ const deleteSpecialty = (id) => {
         });
       }
 
-      await specialty.deleteOne({
+      await Specialty.deleteOne({
         specialtyId: id,
       });
 
